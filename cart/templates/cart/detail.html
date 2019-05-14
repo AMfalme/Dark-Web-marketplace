@@ -1,0 +1,142 @@
+{% extends 'main/base.html' %}
+{% load static %}
+{% load ratings %}
+{% block title %}
+    Your Shopping Cart
+{% endblock %}
+
+
+{% block content %}
+    <div id="sidebar" class="span3">
+			<div class="" style="margin-bottom: 20px">
+				<p class="side-header">Search</p>
+				<ul class="side-back" style="margin-top: -16px">
+					<form class="form-inline" action="{% url 'search' %}" method="get">
+                      {% csrf_token %}
+                      <div class="">
+                          <!--<label for="category">Category :</label>-->
+                        <select  name="category" class="side-search"  id="category" value="">
+                            <option value="">Select Category</option>
+                            {% for c in categories %}
+                            <option value="{{ c.name }}">{{ c.name }}</option>
+                            {% endfor %}
+                        </select>
+                      </div>
+                      <div class="">
+                          <!--<label for="price">Price :</label>-->
+                          <input type="number" id="price" class="side-search" placeholder="Enter Price" min="0" name="price" value="" />
+                      </div>
+                      <div class="">
+                          <!--<label for="country">Shipped From :</label>-->
+                        <select  name="country" class="side-search" id="country" value="">
+                            <option value="">Select Country</option>
+                            {% for c in countries %}
+                            <option value="{{ c.code }}">{{ c.name }}</option>
+                            {% endfor %}
+                        </select>
+                      </div>
+					  <div>
+                      	<button type="submit" class="side-search">Search</button>
+					  </div>
+                    </form>
+				</ul>
+			</div>
+
+			<div class="" style="margin-bottom: 20px">
+				<p class="side-header">category</p>
+				<ul class="side-back" style="margin-top: -16px">
+					<li class="side-content" ><a href="{% url 'product_list' %}" style="color: #6ec2d1">All</a></li>
+            		{% for c in categories %}
+
+              			<li class="side-content" >
+                  			<a href="{{ c.get_absolute_url }}" style="color: #6ec2d1"><span class="icon-chevron-right"></span>{{ c.name }}</a>
+              			</li>
+            		{% endfor %}
+				</ul>
+			</div>
+
+			<div class="" style="margin-bottom: 20px">
+				<p class="side-header"> 1 btc price</p>
+				<ul class="side-back" style="margin-top: -16px">
+					<!--<li class="side-content" >
+                  		<i class="fa fa-btc"></i>BTC  1
+                  	</li>-->
+                  	<li class="side-content">
+						<a style="color: #6ec2d1">USD  {{ crypto_data.btcusd }}</a>
+                  	</li>
+					<li class="side-content">
+                      	<a style="color: #6ec2d1">GBP  {{ crypto_data.btcgbp }}</a>
+                  	</li>
+                    <li class="side-content">
+                      	<a style="color: #6ec2d1">EUR  {{ crypto_data.btceur }}</a>
+                  	</li>
+				</ul>
+			</div>
+
+		</div>
+    <div class="span9">
+    	<ul class="breadcrumb">
+            <li class="cate-name">Your Shopping Cart</li>
+            <!--<span class="badge pull-right" style="background-color: #f89406; font-size: 18px">
+                {% with totail_items=cart|length %}
+                    {% if cart|length > 0 %}
+                        <a href="{% url "cart:cart_detail" %}" style="color: #ffffff; ">
+                            {{ totail_items }} item{{ totail_items|pluralize }}, $ {{ cart.get_total_price }}
+                        </a>
+                    {% else %}
+                        Your cart is empty.
+                    {% endif %}
+                {% endwith %}
+            </span>-->
+        </ul>
+        <div class="well well-small" style="background-color: #0d0d0d; border: none">
+        {% for item in cart %}
+            {% with product=item.product  %}
+            <div class="row-fluid" style="margin-bottom: 10px;border-bottom: 1px solid #3b3b3b">
+                <div class="span2">
+			        <a href="{{ product.get_absolute_url }}">
+                        <img src="{% if product.image %} {{ product.image.url }} {% else %} {% static 'assets/img/default.png' %} {% endif %}" alt="..." style="height: 130px; width: auto">
+                    </a>
+		        </div>
+                <div class="span6">
+                    <div class="row-fluid">
+                        <div class="span6"><h4 class="content">Name : </h4></div>
+                        <div class="span6"><h4 class="content1"> {{product.name}} </h4></div>
+                    </div>
+                    <div class="row-fluid">
+                        <div class="span6"><h4 class="content">Unit Price : </h4></div>
+                        <div class="span6"><h4 class="content1">$ {{item.price}} </h4></div>
+                    </div>
+                    <div class="row-fluid">
+                        <div class="span6"><h4 class="content">Sum Price : </h4></div>
+                        <div class="span6"><h4 class="content1">$ {{item.total_price}} </h4></div>
+                    </div>
+                    <!--<h4 class="content">Unit Price : $ {{item.price}} </h4>
+                    <h4 class="content">Price : $ {{item.total_price}} </h4>-->
+		        </div>
+                <div class="span4 alignR">
+                    <br>
+		            <form action="{% url 'cart:cart_add' product.id %}" method="post">{% csrf_token %}
+                                    {{ item.update_quantity_form.quantity }}
+                                    {{ item.update_quantity_form.update }}
+                                    <input type="submit" value="Update" class="btn btn-info">
+                    </form>
+                    <a href="{% url 'cart:cart_remove' product.id %}" class="btn btn-danger">Remove</a>
+                    <a href="{% url 'orders:order_create' product.id%}" class="btn btn-success">Checkout</a>
+		        </div>
+            </div>
+            {% endwith %}
+        {% endfor %}
+             {% comment %}<div class="row-fluid" >
+                 <div class="span4" style="float: right; margin-top: 10px">
+                     <a href="{% url 'orders:order_create' %}" class="btn btn-success">Checkout</a>
+                 </div>
+                 <div class="span6" style="float: right">
+                    <div class="span6"><h4 class="content">Total : </h4></div>
+                    <div class="span6"><h4 class="content1">$ {{ cart.get_total_price }}</h4></div>
+                 </div>
+                 <div class="span2"></div>
+             </div>{% endcomment %}
+        </div>
+    </div>
+{% endblock %}

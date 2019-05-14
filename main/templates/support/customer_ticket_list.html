@@ -1,0 +1,82 @@
+{% extends 'main/base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block content %}
+
+<div class="span12">
+  <div class="well well-small" style="background-color: #0d0d0d; border: none">
+    <div class="row-fluid">
+      <div class="col-12 col-md-12 m-b-sm">
+        <div class="card bg-light">
+          <a href="{% url 'support:customer_ticket_list' %}" class="btn btn-success" style="font-size: 20px; padding: 5px 10px;">Ticket</a>
+          <a href="{% url 'support:customer_chat' %}" class="btn btn-dark" style="font-size: 20px; padding: 5px 10px;">Chat</a>
+          <div class="title-back" style="height: 75vh;">
+            <div class="col-md-12 col-sm-12 m-y-md">
+                    <!-- BEGIN EXAMPLE TABLE PORTLET-->
+                    <div class="ticket font-light">
+                        <div class="box-header">
+                            <div style="height: 30px;">
+                                <div class="col-md-6" style="float: left;">
+                                   <h2 style="color: #6ec2d1">All Tickets</h2>
+                                </div>
+                                <div class="col-md-6" style="float: right;">
+                                    <div class="btn-group">
+                                        <a href="{% url 'support:create_ticket' %}" class="btn btn-success">
+                                        Add Ticket <i class="fa fa-plus"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                          {% comment %}<small>Add the base class .table to any &lt;table>.</small>{% endcomment %}
+                        </div>
+                        <div class="ticket-body box-divider m-0">
+                            <div class="box-divider m-0"></div>
+                            <table class="table" id="sample_1">
+                            <thead>
+                            <tr>
+                                <th style="padding-left: 20px;">
+                                     Subject
+                                </th>
+                                <th style="padding-left: 20px;">
+                                     Date
+                                </th>
+                                <th style="padding-left: 20px;">
+                                     Status
+                                </th>
+                            </tr>
+                            </thead>
+                            <tbody style="font-style: normal;">
+                                {% for c in tickets %}
+                                    {% if c.admin is False %}
+                                        <tr class="odd gradeX">
+                                            <td>
+                                                 <a href="{% url 'support:customer_ticket' c.id %}" style="color: #007bffd4;">{{ c.sub_title }}</a>
+                                            </td>
+                                            <td class="center">
+                                                 {{ c.sent }}
+                                            </td>
+                                            <td>
+                                                {% if c.state %}
+                                                    <span class="label label-sm"> closed </span>
+                                                {% else %}
+                                                    <span class="label label-sm" style="background: #d02020"> open </span>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                    {% endif %}
+                                {% endfor %}
+                            </tr>
+                            </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <!-- END EXAMPLE TABLE PORTLET-->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,43 @@
+{% extends 'orders/order/new_order_detail.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block reject %}
+
+    <!--PGP UPDATE FORM-->
+    <div class="title-back" id="update_pgp">
+        <form method="POST" action="{% url 'vendor_reject_confirm' %}">{% csrf_token %}
+            <p>{{ content }}</p>
+            {% for field in pgp_form.visible_fields %}
+                <div class="title-back">
+                    {% if pgp_form.is_bound %}
+                        {% if field.errors %}
+                            {% render_field field class="form-control is-invalid" %}
+                            {% for error in field.errors %}
+                                <div class="invalid-feedback">
+                                    {{ error }}
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            {% render_field field class="form-control is-valid" %}
+                        {% endif %}
+                    {% else %}
+                        {% render_field field class="form-control" %}
+                    {% endif %}
+                </div>
+            {% endfor %}
+
+
+            <div class="row">
+                <div class="col-2" id="pgp_update">
+                    <button type="submit" class="btn btn-success">Update</button>
+                </div>
+                <div class="col-2" id="pgp_cancel">
+                    <a href="{% url 'user_profile' %}" class="btn btn-danger">Cancel <i class="fa fa-times"></i> </a>
+                </div>
+            </div>
+
+        </form>
+    </div>
+
+{% endblock %}

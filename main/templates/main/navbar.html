@@ -1,0 +1,114 @@
+{% load static %}
+{% load widget_tweaks %}
+
+<!--<nav class="d-lg-none" style="padding:50px">
+    <input class="burger-check" id="burger-check" type="checkbox"><label for="burger-check" class="burger"></label>
+    <div id="navigation1" class="navigation">
+      <ul>
+        <li {% if not category %} class="active"{% endif %}><a href="{% url 'product_list' %}">All</a></li>
+      </ul>
+      {% for c in categories %}
+          <li {% if category.slug == c.slug %} class="active"{% endif %}>
+              <a href="{{ c.get_absolute_url }}">{{ c.name }}</a>
+          </li>
+      {% endfor %}
+    </div>
+</nav>-->
+
+<div class="navbar navbar-inverse navbar-fixed-top" style="background-color: #0c0c0c">
+	<div class="topNav" style="background-color: #0c0c0c">
+		<div class="container" style="height: 5rem">
+			<div class="alignR" style="height: 5rem">
+				<div class="pull-left span3">
+					<!--<a href="#"><span class="icon-twitter"></span></a>
+					<a href="#"><span class="icon-facebook"></span></a>
+					<a href="#"><span class="icon-youtube"></span></a>
+					<a href="#"><span class="icon-tumblr"></span></a>-->
+					<h3>
+						<a class="logo" href="{% url 'product_list' %}">
+							<img src="{% static 'assets/img/logo.png' %}" >
+						</a>
+					</h3>
+				</div>
+                {% if request.user.is_authenticated %}
+                    <a href="{% url 'inbox_list' %}"><p class="header"><span class="fa fa-envelope"></span> Messages</p></a>
+                    <a href="{% url 'user_profile' %}"><p class="header"><span class="icon-user"></span> Profile</p></a>
+                    <a href="{% url 'logout' %}"><p class="header"><span class="fa fa-sign-out"></span> LogOut</p></a>
+                    <a href="{% url 'message_list' %}"><p class="header"><span class="fa fa-bell"></span> Notification</p></a>
+                {% else %}
+                    <a href="{% url 'signin' %}"><p class="header"><span class="fa fa-sign-in"></span> Sign-in</p></a>
+                    <a href="{% url 'signup' %}"><p class="header"><span class="fa fa-sign-out"></span> Sign-up</p></a>
+                {% endif %}
+                {% if request.user.is_authenticated %}
+                    <a href="{% url 'support:support_list' %}"><p class="header"><span class="fa fa-question"></span>{% if request.user.is_admin %} Admin Support{% else %} Supoort{% endif %}</p></a>
+                {% endif %}
+                {% if request.user.is_admin %}
+                <a href="{% url 'cart:cart_detail' %}" style="margin-right:20px">
+                    <p class="header">
+                        <span class="icon-shopping-cart"></span>
+                        {% with totail_items=cart|length %}
+                            {% if cart|length > 0 %}
+                                {{ totail_items }}
+                            {% else %}
+                                0
+                            {% endif %}
+                        {% endwith %}Item(s)
+                    </p>
+                </a>
+                {% endif %}
+				<!--<a href="index.html"><h3><span class="icon-home"></span> Home</h3></a>
+				<a href="#"><span class="icon-user"></span> My Account</a>
+				<a href="register.html"><span class="icon-edit"></span> Free Register </a>
+				<a href="contact.html"><span class="icon-envelope"></span> Contact us</a>
+				<a href="cart.html"><span class="icon-shopping-cart"></span> 2 Item(s) - <span class="badge badge-warning"> $448.42</span></a>-->
+			</div>
+		</div>
+	</div>
+</div>
+
+<!--<div id="signin" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+
+    &lt;!&ndash; Modal content&ndash;&gt;
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Login</h4>
+            </div>
+            <div class="modal-body">
+
+                <form action="{% url 'signin' %}" method="post" style="margin:auto;margin-top:6%;width:40%;">{% csrf_token %}
+
+                {% for field in form.visible_fields %}
+                    <div class="form-group">
+                    {{ field.label_tag }}
+
+                    {% if form.is_bound %}
+                        {% if field.errors %}
+                            {% render_field field class="form-control is-invalid" %}
+                            {% for error in field.errors %}
+                            <div class="invalid-feedback">
+                            {{ error }}
+                            </div>
+                            {% endfor %}
+                        {% else %}
+                            {% render_field field class="form-control is-valid" %}
+                        {% endif %}
+                    {% else %}
+                        {% render_field field class="form-control" %}
+                    {% endif %}
+                    </div>
+                 {% endfor %}
+
+                    <br>
+                    <input type="submit" class="btn btn-primary" value="Login" style="margin:auto">
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>-->
+
+

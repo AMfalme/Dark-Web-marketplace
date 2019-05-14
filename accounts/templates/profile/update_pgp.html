@@ -1,0 +1,49 @@
+{% extends 'profile/user_profile.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block profile %}
+<div class="col-12 col-md-12 mb-3">
+  <div class="card">
+    <div class="card-header text-white " style="background: url({% static 'assets/img/title-big.jpg' %}) no-repeat; height: 30px">
+      <p style="color: #6ec2d1;padding: 6px 0 0 40px ">PGP Key</p>
+    </div>
+    <div class="card-body bg-dark">
+    <!--PGP UPDATE FORM-->
+    <div class="title-back" id="update_pgp">
+        <form method="POST" action="{% url 'user_pgp_update' %}">
+            {% csrf_token %}
+
+            {% for field in pgp_form.visible_fields %}
+                <div class="title-back">
+                    {% if pgp_form.is_bound %}
+                        {% if field.errors %}
+                            {% render_field field class="form-control is-invalid" %}
+                            {% for error in field.errors %}
+                                <div class="invalid-feedback">
+                                    {{ error }}
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            {% render_field field class="form-control is-valid" %}
+                        {% endif %}
+                    {% else %}
+                        {% render_field field class="form-control" %}
+                    {% endif %}
+                </div>
+            {% endfor %}
+
+
+            <div class="row">
+                <div class="col-2" id="pgp_update">
+                    <button type="submit" class="btn btn-success">Update</button>
+                </div>
+                <div class="col-2" id="pgp_cancel">
+                    <a href="{% url 'user_profile' %}" class="btn btn-danger">Cancel <i class="fa fa-times"></i> </a>
+                </div>
+            </div>
+
+        </form>
+    </div>
+
+{% endblock %}

@@ -1,0 +1,280 @@
+{% extends 'main/base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+{% load ratings %}
+{% load auth_extras %}
+{% load avatar_tags %}
+{% block title %}
+{% if category %}{{ category.name }} {% else %} My Account {% endif %}
+{% endblock %}
+
+{% block content %}
+<div id="sidebar" class="span3">
+  <div class="box text-center " style="background: #141414">
+    <div class="p-a-md">
+      <p>
+          {% avatar user 240 class="img-circle img-responsive" id="user_avatar" %}
+          <a href="{% url 'avatar_change' %}" class="btn btn-success btn-sm">Change avatar</a>
+      </p>
+      <p class="text-lg text-white block">{{ user.username }}</p>
+      <p class="text-md text-accent">{{ user.level }}</p>
+      <!-- <div class="profile-userbuttons">
+        <button type="button" class="btn btn-success btn-sm">Follow</button>
+        <button type="button" class="btn btn-danger btn-sm">Message</button>
+      </div> -->
+    </div>
+    <div class="row b-t ">
+      <div class="col-xs-4 m-a-sm {% if '/account/profile/' in request.path %} text-warn {% else %} text-side {% endif %}">
+        <a href="{% url 'user_profile' %}">
+          <i class="fa fa-home"></i>
+          Overview </a>
+      </div>
+      {% if request.user|is_vendor %}
+      <div class="col-xs-4 m-a-sm {% if request.path == '/account/settings/' %} text-warn {% else %} text-side {% endif %}">
+        <a href="{% url 'user_vendor_listProducts' %}">
+          <i class="fa fa-user"></i>
+          Vendor Panel </a>
+      </div>
+      {% else %}
+      <div class="col-xs-4 m-a-sm {% if request.path == '/account/settings/' %} text-warn {% else %} text-side {% endif %}">
+        <a href="{% url 'user_favorites' %}">
+          <i class="fa fa-thumbs-up"></i>
+          My Favorites</a>
+      </div>
+      {% endif %}
+      <div class="col-xs-4 m-a-sm {% if '/account/orders/' in request.path %} text-warn {% else %} text-side {% endif %}">
+        <a href="{% url 'user_order_list' %}">
+          <i class="fa fa-shopping-cart"></i>
+          My Orders </a>
+      </div>
+      <div class="col-xs-4 m-a-sm {% if request.path == '/account/ratings/' %} text-warn {% else %} text-side {% endif %}">
+        <a href="{% url 'user_ratings' %}">
+          <i class="fa fa-tasks"></i>
+          My Ratings </a>
+      </div>
+      {% if not request.user|is_vendor %}
+      <div class="col-xs-4 m-a-sm {% if request.path == '/account/help/' %} text-warn {% else %} text-side {% endif %}">
+        <a href="{% url 'vendor_stats' %}">
+          <i class="fa fa-user"></i>
+          Get Vendor </a>
+      </div>
+      {% endif %}
+      <div class="col-xs-4 m-a-sm {% if request.path == '/account/help/' %} text-warn {% else %} text-side {% endif %}">
+        <a href="#">
+          <i class="fa fa-question"></i>
+          Help </a>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<div class="span9">
+  <div class="well well-small" style="background-color: #0d0d0d; border: none">
+    <div class="row-fluid">
+      <div class="col-12 col-md-12 m-b-md">
+        <div class="card bg-light">
+          <div class="card-header text-white " style="background: url({% static 'assets/img/title-big.jpg' %}) no-repeat; height: 30px;">
+            <p style="color: #6ec2d1;padding: 6px 0 0 40px ">User</p>
+          </div>
+          <div class="title-back">
+            <table class="table table-user-information">
+              <tbody>
+                <tr>
+                  <td class="" style="color: #666">User level:</td>
+                  <td class="text-warn">{{ user.level }}</td>
+                </tr>
+                <tr>
+                  <td class="" style="color: #666">Registered since:</td>
+                  <td class="text-warn">{{ user.timestamp }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <!--Change User password-->
+          <div class="col-10 m-t-50 m-b-12" align="right">
+            <a class="btn btn-success btn-sm" href="{% url 'password_change' %}">Password Reset?</a>
+          </div>
+        </div>
+      </div>
+
+      <!--USER PGP KEY-->
+      {% block profile %}
+
+
+            <!--USER terms and conditions-->
+            <div class="col-12 col-md-12 mb-3">
+              <div class="card">
+                <div class="card-header text-white " style="background: url({% static 'assets/img/title-big.jpg' %}) no-repeat; height: 30px">
+                  <p style="color: #6ec2d1;padding: 6px 0 0 40px ">terms and conditions</p>
+                </div>
+                <div class="card-body bg-dark">
+
+
+
+                  <!--PGP KEY-->
+                  <div class="title-back">
+                    <textarea style="background: #141414; width: 862px; height: 220px; color: #666; border: 1px solid #666">{{ terms | safe }}</textarea>
+                  </div>
+
+                  <div class="title-back">
+                    <form method="get" action="{% url 'change_terms' %}">
+                      {% if terms %}
+                      <button class="btn btn-success btn-sm">Edit terms and conditions</button>
+                      {% else %}
+                      <button class="btn btn-success btn-sm">Add terms and conditions</button>
+                      {% endif %}
+                    </form>
+                  </div>
+
+
+                  {% endblock %}
+                </div>
+                <div class="card-footer b-b"></div>
+              </div>
+            </div>
+
+            <!--PGP KEY-->
+            <div class="col-12 col-md-12 mb-3">
+              <div class="card">
+                <div class="card-header text-white " style="background: url({% static 'assets/img/title-big.jpg' %}) no-repeat; height: 30px">
+                  <p style="color: #6ec2d1;padding: 6px 0 0 40px ">PGP Key</p>
+                </div>
+                <div class="card-body bg-dark">
+            <div class="title-back">
+              <textarea style="background: #141414; width: 862px; height: 220px; color: #666; border: 1px solid #666">{{ user.pgp_key | safe }}</textarea>
+            </div>
+
+            <div class="title-back">
+              <form method="get" action="{% url 'user_pgp_update' %}">
+                {% if user.pgp_key %}
+                <button class="btn btn-success btn-sm">Edit PGP Key</button>
+                {% else %}
+                <button class="btn btn-success btn-sm">Add PGP Key</button>
+                {% endif %}
+              </form>
+            </div>
+
+
+          </div>
+          <div class="card-footer b-b"></div>
+        </div>
+      </div>
+
+      <!--LOGIN METHOD normal or 2fa-->
+      <div class="col-12 col-md-12 mb-3">
+        <div class="card bg-light">
+          <div class="card-header text-white " style="background: url({% static 'assets/img/title-big.jpg' %}) no-repeat; height: 30px">
+            <p style="color: #6ec2d1;padding: 6px 0 0 40px ">Login</p>
+          </div>
+          <!--change login method-->
+          <div class="title-back">
+            <div style="padding: 10px 0 5px 20px">
+              <form method="post" action="{% url 'update_tfalogin' %}">
+                {% csrf_token %}
+                {% comment %}<p class="text-white">Choose:</p>{% endcomment %}
+                <select name="login_method">
+                  <option value="0">Normal Login</option>
+                  {% if user.tfalogin == 1 %}
+                  <option value="1" selected>2FA PGP Login</option>
+                  {% else %}
+                  <option value="1">2FA PGP Login</option>
+                  {% endif %}
+                </select>
+                <input type="submit" class="btn btn-success" value="OK" style="margin-left: 30px">
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+{% comment %}<div class="row">
+  <!--USER INFO && PASSWORD CHANGE-->
+  <div class="col-12 col-md-12 mb-3">
+    <div class="card bg-light">
+      <div class="card-body">
+        <table class="table table-user-information">
+          <tbody>
+            <tr>
+              <td>User level:</td>
+              <td>{{ user.level }}</td>
+            </tr>
+            <tr>
+              <td>Registered since:</td>
+              <td>11/12/2013</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <!--Change User password-->
+      <div class="col-10 m-t-50 m-b-12 mx-auto">
+        <a class="text-center" href="{% url 'password_change' %}">
+          <P>Password Reset?</P>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!--USER PGP KEY-->
+  <div class="col-12 col-md-12 mb-3">
+    <div class="card">
+      <div class="card-header text-white bg-dark">PGP Key</div>
+      <div class="card-body bg-light">
+        <div class="row">
+          {% block profile %}
+
+
+          <!--PGP KEY-->
+          <div class="col-10 mt-4 mb-2 mx-auto">
+            <textarea cols="80" rows="10">
+            {{ user.pgp_key | safe }}
+            </textarea>
+          </div>
+
+          <div class="col-10 mt-4 mb-2 mx-auto">
+            <form method="get" action="{% url 'user_pgp_update' %}">
+              {% if user.pgp_key %}
+              <button class="btn-block button">Edit PGP key</button>
+              {% else %}
+              <button class="btn-block button">Add PGP key</button>
+              {% endif %}
+            </form>
+          </div>
+
+
+          {% endblock %}
+        </div>
+      </div>
+      <div class="card-footer"></div>
+    </div>
+  </div>
+
+  <!--LOGIN METHOD normal or 2fa-->
+  <div class="col-12 col-md-12 mb-3">
+    <div class="card bg-light">
+      <div class="card-header text-white bg-dark">PGP Key</div>
+      <!--change login method-->
+      <div class="col-10 m-t-50 m-b-12 mx-auto">
+        <form method="post" action="{% url 'update_tfalogin' %}">
+          {% csrf_token %}
+          Choose:
+          <select name="login_method">
+            <option value="0">Normal Login</option>
+            {% if user.tfalogin == 1 %}
+            <option value="1" selected>2FA PGP Login</option>
+            {% else %}
+            <option value="1">2FA PGP Login</option>
+            {% endif %}
+          </select>
+          <input type="submit" class="btn btn-primary" value="OK">
+        </form>
+      </div>
+    </div>
+  </div>
+
+</div>{% endcomment %}
+{% endblock %}

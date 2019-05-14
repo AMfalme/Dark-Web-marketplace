@@ -1,0 +1,44 @@
+{% extends 'main/base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block title %}Login{% endblock %}
+
+{% block content %}
+<form action="{% url 'signin' %}" method="post" style="margin:auto;margin-top:6%;width:27.7%; background: url(../static/assets/img/side-back.jpg) bottom left no-repeat #141414">
+        {% csrf_token %}
+    <div class="box">
+        <div class="box-header" style="background: url(../static/assets/img/navigation.jpg)">
+            <h2 style="width: 40%; color: #6ec2d1;">Login</h2>
+        </div>
+        <div class="box-body" style="background: #141414">
+            {% for field in form.visible_fields %}
+                <div class="form-group">
+                  {% comment %}{{ field.label_tag style="color: #ffffff"}}{% endcomment %}
+                    <label for="id_{{field.label}}" style="color: #a79d9d">
+                        {{ field.label }}
+                    </label>
+                  {% if form.is_bound %}
+                    {% if field.errors %}
+                      {% render_field field class="form-control is-invalid" %}
+                      {% for error in field.errors %}
+                        <div class="invalid-feedback text-warning">
+                          {{ error }}
+                        </div>
+                      {% endfor %}
+                    {% else %}
+                      {% render_field field class="form-control is-valid" %}
+                    {% endif %}
+                  {% else %}
+                    {% render_field field class="form-control" %}
+                  {% endif %}
+                </div>
+            {% endfor %}
+
+              <br>
+              <input type="submit" class="btn btn-info" align="center" value="Login" style="margin: 0 0 0 115px">
+        </div>
+    </div>
+</form>
+
+{% endblock %}

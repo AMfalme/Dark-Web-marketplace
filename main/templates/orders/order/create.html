@@ -1,0 +1,171 @@
+{% extends 'main/base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block title %}
+    Your Shopping Cart | Checkout
+{% endblock %}
+
+{% block content %}
+    <div id="sidebar" class="span3">
+			<div class="" style="margin-bottom: 20px">
+				<p class="side-header">Search</p>
+				<ul class="side-back" style="margin-top: -16px">
+					<form class="form-inline" action="{% url 'search' %}" method="get">
+                      {% csrf_token %}
+                      <div class="">
+                          <!--<label for="category">Category :</label>-->
+                        <select  name="category" class="side-search"  id="category" value="">
+                            <option value="">Select Category</option>
+                            {% for c in categories %}
+                            <option value="{{ c.name }}">{{ c.name }}</option>
+                            {% endfor %}
+                        </select>
+                      </div>
+                      <div class="">
+                          <!--<label for="price">Price :</label>-->
+                          <input type="number" id="price" class="side-search" placeholder="Enter Price" min="0" name="price" value="" />
+                      </div>
+                      <div class="">
+                          <!--<label for="country">Shipped From :</label>-->
+                        <select  name="country" class="side-search" id="country" value="">
+                            <option value="">Select Country</option>
+                            {% for c in countries %}
+                            <option value="{{ c.code }}">{{ c.name }}</option>
+                            {% endfor %}
+                        </select>
+                      </div>
+					  <div>
+                      	<button type="submit" class="side-search">Search</button>
+					  </div>
+                    </form>
+				</ul>
+			</div>
+
+			<div class="" style="margin-bottom: 20px">
+				<p class="side-header">category</p>
+				<ul class="side-back" style="margin-top: -16px">
+					<li class="side-content" ><a href="{% url 'product_list' %}" style="color: #6ec2d1">All</a></li>
+            		{% for c in categories %}
+
+              			<li class="side-content" >
+                  			<a href="{{ c.get_absolute_url }}" style="color: #6ec2d1"><span class="icon-chevron-right"></span>{{ c.name }}</a>
+              			</li>
+            		{% endfor %}
+				</ul>
+			</div>
+
+			<div class="" style="margin-bottom: 20px">
+				<p class="side-header"> 1 btc price</p>
+				<ul class="side-back" style="margin-top: -16px">
+					<!--<li class="side-content" >
+                  		<i class="fa fa-btc"></i>BTC  1
+                  	</li>-->
+                  	<li class="side-content">
+						<a style="color: #6ec2d1">USD  {{ crypto_data.btcusd }}</a>
+                  	</li>
+					<li class="side-content">
+                      	<a style="color: #6ec2d1">GBP  {{ crypto_data.btcgbp }}</a>
+                  	</li>
+                    <li class="side-content">
+                      	<a style="color: #6ec2d1">EUR  {{ crypto_data.btceur }}</a>
+                  	</li>
+				</ul>
+			</div>
+
+		</div>
+    <div class="span9">
+    	<ul class="breadcrumb">
+            <li class="cate-name">Checkout</li>
+            <!--<span class="badge pull-right" style="background-color: #f89406; font-size: 18px">
+                {% with totail_items=cart|length %}
+                    {% if cart|length > 0 %}
+                        <a href="{% url "cart:cart_detail" %}" style="color: #ffffff; ">
+                            {{ totail_items }} item{{ totail_items|pluralize }}, $ {{ cart.get_total_price }}
+                        </a>
+                    {% else %}
+                        Your cart is empty.
+                    {% endif %}
+                {% endwith %}
+            </span>-->
+        </ul>
+        <div class="well well-small" style="background-color: #0d0d0d; border: none">
+            <div class="row-fluid">
+            {% if request.user.is_authenticated %}
+
+            {% else %}
+                <div style="margin-top:20px;margin-bottom:20px">
+                    <h6>You do not have an account, you must create an account,or <a style="text-decoration:underline" href="{% url 'signin' %}">Sign-in</a> to order</h6>
+                </div>
+            {% endif %}
+                <div class="span6">
+                    <form action="." method="post" class="m-l-sm">
+                        {% csrf_token %}
+
+                            {% for field in form.visible_fields %}
+                                <div class="form-group">
+                                 {% comment %}{{ field.label_tag }}{% endcomment %}
+                                {% comment %}<div  style="background: url({% static '/assets/img/title-long.jpg' %}); height: 30px">{% endcomment %}
+                                    <label for="id_{{field.label}}" style="background: url({% static '/assets/img/title-long.jpg' %}) no-repeat; height: 30px;color: #6ec2d1; padding: 5px 0 0 35px">
+                                        {{ field.label }}
+                                    </label>
+                                {% comment %}</div>{% endcomment %}
+                                  {% if form.is_bound %}
+                                    {% if field.errors %}
+                                      {% render_field field class="form-control is-invalid" %}
+                                      {% for error in field.errors %}
+                                        <div class="invalid-feedback">
+                                          {{ error }}
+                                        </div>
+                                      {% endfor %}
+                                    {% else %}
+                                      {% render_field field class="form-control is-valid" %}
+                                    {% endif %}
+                                  {% else %}
+                                    {% render_field field class="form-control" style="background: #141414;margin-top: -10px; width: 96.5%; border: none;color"%}
+                                  {% endif %}
+                                </div>
+                              {% endfor %}
+
+                        <br>
+                        {% if request.user.is_authenticated %}
+                            <input type="submit" class="btn btn-primary" value="Submit Order">
+                        {% else %}
+                            <input type="submit" class="btn btn-primary" value="Signup">
+                        {% endif %}
+
+                    </form>
+                </div>
+                <div class="span6 title-back m-l-sm">
+                    <div style="background: url({% static 'assets/img/title-long.jpg' %}); height: 30px; width: 100%">
+                        <label style="color: #6ec2d1; padding: 5px 0 0 35px"> Your Order</label>
+                    </div>
+                    <ul class="list-group">
+                    {% for item in cart %}
+                        {% if product_id == item.product.id %}
+                        <li class="list-group-item" style="list-style: none; background: #141414">
+                            <div class="span6">
+                                <p style="color: #666">{{ item.quantity }}  x  {{ item.product.name }}</p>
+                            </div>
+
+                        <span class="text-warn">      $ {{ item.total_price }}</span>
+                        </li>
+                        {% comment %}{% endif %}
+                    {% endfor %}{% endcomment %}
+
+                        <li style="list-style: none; background: #141414;border-top: 1px solid #3b3b3b">
+                            <div class="span6">
+                                <h3 style="color: #666">Total Cost:</h3>
+                            </div>
+                            <div class="span6">
+                                <h3 class="text-warn"> $ {{ item.total_price }}</h3>
+                            </div>
+                        </li>
+                        {% endif %}
+                    {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

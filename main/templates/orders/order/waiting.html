@@ -1,0 +1,101 @@
+
+{% extends 'main/base.html' %}
+{% load static %}
+{% block title %}
+    Your Shopping Cart| Thank you
+{% endblock %}
+
+{% block content %}
+<div id="sidebar" class="span3">
+			<div class="" style="margin-bottom: 20px">
+				<p class="side-header">Search</p>
+				<ul class="side-back" style="margin-top: -16px">
+					<form class="form-inline" action="{% url 'search' %}" method="get">
+                      {% csrf_token %}
+                      <div class="">
+                          <!--<label for="category">Category :</label>-->
+                        <select  name="category" class="side-search"  id="category" value="">
+                            <option value="">Select Category</option>
+                            {% for c in categories %}
+                            <option value="{{ c.name }}">{{ c.name }}</option>
+                            {% endfor %}
+                        </select>
+                      </div>
+                      <div class="">
+                          <!--<label for="price">Price :</label>-->
+                          <input type="number" id="price" class="side-search" placeholder="Enter Price" min="0" name="price" value="" />
+                      </div>
+                      <div class="">
+                          <!--<label for="country">Shipped From :</label>-->
+                        <select  name="country" class="side-search" id="country" value="">
+                            <option value="">Select Country</option>
+                            {% for c in countries %}
+                            <option value="{{ c.code }}">{{ c.name }}</option>
+                            {% endfor %}
+                        </select>
+                      </div>
+					  <div>
+                      	<button type="submit" class="side-search">Search</button>
+					  </div>
+                    </form>
+				</ul>
+			</div>
+
+			<div class="" style="margin-bottom: 20px">
+				<p class="side-header">category</p>
+				<ul class="side-back" style="margin-top: -16px">
+					<li class="side-content" ><a href="{% url 'product_list' %}" style="color: #6ec2d1">All</a></li>
+            		{% for c in categories %}
+
+              			<li class="side-content" >
+                  			<a href="{{ c.get_absolute_url }}" style="color: #6ec2d1"><span class="icon-chevron-right"></span>{{ c.name }}</a>
+              			</li>
+            		{% endfor %}
+				</ul>
+			</div>
+
+			<div class="" style="margin-bottom: 20px">
+				<p class="side-header"> 1 btc price</p>
+				<ul class="side-back" style="margin-top: -16px">
+					<!--<li class="side-content" >
+                  		<i class="fa fa-btc"></i>BTC  1
+                  	</li>-->
+                  	<li class="side-content">
+						<a style="color: #6ec2d1">USD  {{ crypto_data.btcusd }}</a>
+                  	</li>
+					<li class="side-content">
+                      	<a style="color: #6ec2d1">GBP  {{ crypto_data.btcgbp }}</a>
+                  	</li>
+                    <li class="side-content">
+                      	<a style="color: #6ec2d1">EUR  {{ crypto_data.btceur }}</a>
+                  	</li>
+				</ul>
+			</div>
+
+		</div>
+<div class="span9">
+    <div class="well well-small" style="background-color: #0d0d0d; border: none">
+        <div class="row-fluid">
+            <div class="container">
+                <div class="row">
+                    <ul>
+                        {% comment %}<li style="color: #666">Will send you message after confirm your transaction. Please wait some times during confirm your transaction.</li>{% endcomment %}
+                        <li style="color: #666">{{ content }}</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+    {% comment %}<div class="container">
+        <div class="row" style="margin-top: 12%">
+            <ul>
+                <li style="color: #666">Will send you message after confirm your transaction. Please wait some times during confirm your transaction.</li>
+            </ul>
+        </div>
+    </div>
+{% endcomment %}
+
+{% endblock %}
+
+

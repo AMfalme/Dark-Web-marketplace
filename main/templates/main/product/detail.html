@@ -1,0 +1,139 @@
+{% extends 'main/base.html' %}
+{% load static %}
+{% load ratings %}
+{% load static_ratings %}
+{% block title %}
+    {% if category %}{{ category.name }} {% else %} Products {% endif %}
+{% endblock %}
+
+{% block content %}
+
+    <div id="sidebar" class="span3">
+			<div class="" style="margin-bottom: 20px">
+				<p class="side-header">Search</p>
+				<ul class="side-back" style="margin-top: -16px">
+					<form class="form-inline" action="{% url 'search' %}" method="get">
+                      {% csrf_token %}
+                      <div class="">
+                          <!--<label for="category">Category :</label>-->
+                        <select  name="category" class="side-search"  id="category" value="">
+                            <option value="">Select Category</option>
+                            {% for c in categories %}
+                            <option value="{{ c.name }}">{{ c.name }}</option>
+                            {% endfor %}
+                        </select>
+                      </div>
+                      <div class="">
+                          <!--<label for="price">Price :</label>-->
+                          <input type="number" id="price" class="side-search" placeholder="Enter Price" min="0" name="price" value="" />
+                      </div>
+                      <div class="">
+                          <!--<label for="country">Shipped From :</label>-->
+                        <select  name="country" class="side-search" id="country" value="">
+                            <option value="">Select Country</option>
+                            {% for c in countries %}
+                            <option value="{{ c.code }}">{{ c.name }}</option>
+                            {% endfor %}
+                        </select>
+                      </div>
+					  <div>
+                      	<button type="submit" class="side-search">Search</button>
+					  </div>
+                    </form>
+				</ul>
+			</div>
+
+			<div class="" style="margin-bottom: 20px">
+				<p class="side-header">category</p>
+				<ul class="side-back" style="margin-top: -16px">
+					<li class="side-content" ><a href="{% url 'product_list' %}" style="color: #6ec2d1">All</a></li>
+            		{% for c in categories %}
+
+              			<li class="side-content" >
+                  			<a href="{{ c.get_absolute_url }}" style="color: #6ec2d1"><span class="icon-chevron-right"></span>{{ c.name }}</a>
+              			</li>
+            		{% endfor %}
+				</ul>
+			</div>
+
+			<div class="" style="margin-bottom: 20px">
+				<p class="side-header"> 1 btc price</p>
+				<ul class="side-back" style="margin-top: -16px">
+					<!--<li class="side-content" >
+                  		<i class="fa fa-btc"></i>BTC  1
+                  	</li>-->
+                  	<li class="side-content">
+						<a style="color: #6ec2d1">USD  {{ crypto_data.btcusd }}</a>
+                  	</li>
+					<li class="side-content">
+                      	<a style="color: #6ec2d1">GBP  {{ crypto_data.btcgbp }}</a>
+                  	</li>
+                    <li class="side-content">
+                      	<a style="color: #6ec2d1">EUR  {{ crypto_data.btceur }}</a>
+                  	</li>
+				</ul>
+			</div>
+
+		</div>
+
+    <div class="span9">
+    	<ul class="breadcrumb">
+        <li><a href="{% url 'product_list' %}" class="cate-name">All</a>  </li>
+        <li><a href="{{ product.category.get_absolute_url }}" class="cate-name">{{ product.category }}</a>  </li>
+        <li class="active"><a href="{{ product.get_absolute_url }}" class="cate-name">{{ product.name }}</a> </li>
+      </ul>
+	    <div class="well well-small" style="background-color: #0d0d0d; border: none">
+		    <div class="row-fluid">
+			    <div class="span5">
+			      <div id="myCarousel" class="carousel slide cntr">
+              <div class="carousel-inner">
+                <div class="item active">
+                  <a href="#"> <img src="{% if product.image %} {{ product.image.url }} {% else %} {% static 'assets/img/default.png' %} {% endif %}" alt="" style="width:95%"></a>
+                </div>
+              </div>
+              <!--<a class="left carousel-control" href="#myCarousel" data-slide="prev">‹</a>
+              <a class="right carousel-control" href="#myCarousel" data-slide="next">›</a>-->
+            </div>
+            <div class="star-rate">
+              <div class="span7">
+                  Average Rating {%  static_ratings avg_rating %}
+              </div>
+              <!--<div class="span5">
+                  <button type="submit" class="shopBtn"><span class=" icon-shopping-cart"></span> Add to cart</button>
+              </div>-->
+            </div>
+			    </div>
+  		    <div class="span7">
+            <div class="" style="margin-bottom: 20px">
+  		        <p class="title-header">{{ product.name }}</p>
+  		        <div class="title-back" style="margin-top: -16px">
+                    <br>
+  			        <form action="{% url 'cart:cart_add' product.id %}" method="post" class="form-horizontal qtyFrm">
+                        {% csrf_token %}
+                        <div class="control-group">
+                            <label class="control-label" style="color: #f89406"><span>$ {{ product.price }}</span></label>
+                            <div>{{ cart_product_form.quantity }}</div>
+                        </div>
+                        <p style="color: #d6d0c7; padding: 0 10px 0 10px">{{ product.description|safe|linebreaksbr }}</p>
+                        <label style="color: #d6d0c7; padding: 0 10px 0 10px; font-size: 20px;">Terms and Conditions:</label>
+                        <p style="color: #d6d0c7; padding: 0 10px 0 10px">{{ term_conditions.description }}</p>
+                        <button type="submit" class="shopBtn"><span class=" icon-shopping-cart"></span>Buy</button>
+  		            </form>
+  		        </div>
+  		      </div>
+            <div class="" style="margin-bottom: 20px">
+  		        <p class="title-header">vendor</p>
+  		        <ul class="title-back" style="margin-top: -16px">
+                <li class="side-content">
+  				        <a href="{% url 'vendor_public_profile' id=vendor.id %}" style="color: #6ec2d1">Name : {{vendor.username}}</a>
+                </li>
+  			        <li class="side-content">
+                  <a style="color: #6ec2d1">Shipped From : {{country}}</a>
+                </li>
+  		        </ul>
+  	        </div>
+  		    </div>
+        </div>
+      </div>
+    </div>
+{% endblock %}

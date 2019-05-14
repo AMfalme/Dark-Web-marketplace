@@ -1,0 +1,28 @@
+{% extends 'main/base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block content %}
+
+<div class="span12">
+  <div class="well well-small" style="background-color: #0d0d0d; border: none">
+    <div class="row-fluid">
+      <div class="col-12 col-md-12 m-b-sm">
+        <div class="card bg-light">
+            {% if request.user.is_admin %}
+          <a href="{% url 'support:admin_ticket_list' %}" class="btn btn-dark" style="font-size: 20px; padding: 5px 10px;">Ticket</a>
+          <a href="{% url 'support:admin_chat' %}" class="btn btn-dark" style="font-size: 20px; padding: 5px 10px;">Chat</a>
+            {% else %}
+          <a href="{% url 'support:customer_ticket_list' %}" class="btn btn-dark" style="font-size: 20px; padding: 5px 10px;">Ticket</a>
+          <a href="{% url 'support:customer_chat' %}" class="btn btn-dark" style="font-size: 20px; padding: 5px 10px;">Chat</a>
+            {% endif %}
+          <div class="title-back" style="height: 75vh;">
+            <div class="col-md-12 col-sm-12 m-y-md">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

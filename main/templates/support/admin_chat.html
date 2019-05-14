@@ -1,0 +1,96 @@
+{% extends 'main/base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+{% load avatar_tags %}
+{% block content %}
+
+<div class="span12">
+  <div class="well well-small" style="background-color: #0d0d0d; border: none">
+    <div class="row-fluid">
+      <div class="col-12 col-md-12 m-b-sm">
+        <div class="card bg-light">
+          <a href="{% url 'support:admin_ticket_list' %}" class="btn btn-dark" style="font-size: 20px; padding: 5px 10px;">Ticket</a>
+          <a href="{% url 'support:admin_chat' %}" class="btn btn-success" style="font-size: 20px; padding: 5px 10px;">Chat</a>
+          <div class="title-back" style="height: 75vh;">
+            <div class="col-md-12 col-sm-12 m-y-md">
+                <!-- BEGIN PORTLET-->
+                <div class="chat-body font-light" id="chats">
+                    <div class="input-cont">
+                        <select name="country" style="margin-left: 0px;"class="side-search" id="country" onChange="window.document.location.href=this.options[this.selectedIndex].value;">
+                            <option value="0">Select Chat Session</option>
+                            {% for c in chats %}
+                                <option value='{{ c.id }}' {% if chat == c %} {{ "selected" }} {% endif %}>
+                                {% with unread_cnt=unread|get:c.id %}
+                                    {{ c.name }}: {% if unread_cnt != 0 %} {{ unread_cnt }} Message{{ unread_cnt|pluralize }} unread {% else %} Read {% endif %}
+                                {% endwith %}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    {% if chat is not None %}
+                    <div class="scroller" style="height: 500px; border-radius: 5px; border: #404040 solid 1px;" data-always-visible="1" data-rail-visible1="1">
+                        <ul class="chats">
+                            {% for c in messages %}
+                                {% if c.admin is True %}
+                                    <li class="in">
+                                        <div class="message span11">
+                                            <div style="float: right">
+                                                {% if c.read %}
+                                                    <span class="badge">read</span>
+                                                {% else %}
+                                                    <span class="badge" style="background: #d02020">unread</span>
+                                                {% endif %}
+                                            </div>
+                                            <div class="body badge" style="clear: right; float: right; height: 3em; background-color: #2e2e2e; white-space: normal;">
+                                                {{ c.message }}
+                                            </div>
+                                        </div>
+                                        <div class="span1">
+                                            <div style="margin: auto; height: 40px; width: 40px">
+                                                <img class="avatar" alt="" src="{% static 'main/img/icons/admin_avatar.png' %}"/>
+                                            </div>
+                                            <p style="text-align: center">admin</p>
+                                        </div>
+                                    </li>
+                                {% else %}
+                                    <li class="out">
+                                        <div class="span1">
+                                            <div style="margin: auto; height: 40px; width: 40px">
+                                                {% avatar c.name 40 class="img-circle img-responsive"%}
+                                            </div>
+                                            <p style="text-align: center">{{c.name.username}}</p>
+                                        </div>
+                                        <div class="message span11">
+                                            <div class="body badge" style="height: 4em; background-color: #2e2e2e; white-space: normal;">
+                                                {{ c.message }}
+                                            </div>
+                                        </div>
+                                    </li>
+                                {% endif %}
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    <form method="post" action='{% url "support:admin_chat_post_message" %}' style="margin-top: 20px">
+                        {% csrf_token %}
+                        <div class="chat-form">
+                            <div class="input-cont">
+                                <input class="new-form-control" type="text" placeholder="Type a message here..." name="message" />
+                            </div>
+                            <div class="btn-cont text-right">
+                                <button type="submit" class="btn btn-success" >Send</button>
+                            </div>
+                            <input class="new-form-control" type="hidden" placeholder="" name="chat_id" value="{{ chat.id }}" readonly />
+                        </div>
+                    </form>
+                    {% endif %}
+                </div>
+                <!-- END PORTLET-->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

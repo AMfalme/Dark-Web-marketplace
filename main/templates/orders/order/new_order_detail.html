@@ -1,0 +1,137 @@
+{% extends 'main/base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+{% load ratings %}
+{% load auth_extras %}
+{% load avatar_tags %}
+{% block title %}
+   Vendor Panel | New Order Detail
+{% endblock %}
+
+{% block content %}
+    <div id="sidebar" class="span3">
+		{% comment %}<div class="container ">{% endcomment %}
+        {% comment %}<div class="row profile" style="margin-top:12%">{% endcomment %}
+
+            <!-- SIDEBAR  -->
+            {% comment %}<div class="card col-md-3 bg-light" style="max-height: 420px;">
+                <div class="profile-sidebar">{% endcomment %}
+                    <!-- SIDEBAR USERPIC -->
+        <div class="box text-center " style="background: #141414">
+            <div class="p-a-md">
+				    	{% avatar user 240 class="img-circle img-responsive" id="user_avatar" %}
+				    	<p class="text-lg text-white block">{{ user.username }}</p>
+				    	<p class="text-md text-accent">{{ user.level }}</p>
+                        {% comment %}<div class="profile-userbuttons">
+                            <button type="button" class="btn btn-success btn-sm">Follow</button>
+                            <button type="button" class="btn btn-danger btn-sm">Message</button>
+                        </div>{% endcomment %}
+            </div>
+            <div class="row b-t ">
+                <div class="col-xs-4 m-a-sm {% if request.path == '/account/profile/' %} text-warn {% else %} text-side {% endif %}">
+					    <a href="{% url 'user_profile' %}">
+                                    <i class="fa fa-home"></i>
+                                    Overview </a>
+                </div>
+                {% if request.user|is_vendor %}
+                <div class="col-xs-4 m-a-sm {% if 'vendor' in request.path%} text-warn {% else %} text-side {% endif %}">
+                                <a href="{% url 'user_vendor_listProducts' %}">
+                                    <i class="fa fa-user"></i>
+                                    Vendor Panel </a>
+
+                </div>
+                {% else %}
+                <div class="col-xs-4 m-a-sm {% if request.path == '/account/settings/' %} text-warn {% else %} text-side {% endif %}">
+                                <a href="{% url 'user_favorites' %}">
+                                    <i class="fa fa-thumbs-up"></i>
+                                    My Favorites</a>
+                </div>
+                {% endif %}
+                <div class="col-xs-4 m-a-sm {% if '/account/orders/' in request.path %} text-warn {% else %} text-side {% endif %}">
+                                <a href="{% url 'user_order_list' %}">
+                                    <i class="fa fa-shopping-cart"></i>
+                                    My Orders </a>
+                </div>
+                <div class="col-xs-4 m-a-sm {% if request.path == '/account/ratings/' %} text-warn {% else %} text-side {% endif %}">
+                                <a href="#">
+                                    <i class="fa fa-tasks"></i>
+                                    Tasks </a>
+                </div>
+                <div class="col-xs-4 m-a-sm {% if request.path == '/account/help/' %} text-warn {% else %} text-side {% endif %}">
+                                <a href="#">
+                                    <i class="fa fa-question"></i>
+                                    Help </a>
+                </div>
+            </div>
+        </div>
+        <div class="" style="margin-bottom: 20px">
+        <p class="side-header"> My Sales</p>
+        <ul class="side-back" style="margin-top: -16px">
+            <li class="side-content">
+                <a href="{% url 'user_vendor_listProducts' %}" style="color: #6ec2d1">My Products</a>
+            </li>
+            <li class="side-content">
+                <a href="{% url 'vendor_list_new_order' %}" style="color: #6ec2d1">New Orders</a>
+            </li>
+            <li class="side-content">
+                <a href="{% url 'vendor_list_ship_order' %}" style="color: #6ec2d1">Shipped Orders</a>
+            </li>
+            <li class="side-content">
+                <a href="{% url 'vendor_list_complete_order' %}" style="color: #6ec2d1">Completed Orders</a>
+            </li>
+            <li class="side-content">
+                <a href="{% url 'vendor_list_cancel_order' %}" style="color: #6ec2d1">Canceled Orders</a>
+            </li>
+            <li class="side-content">
+                <a href="{% url 'vendor_list_dispute_order' %}" style="color: #6ec2d1">Disputed Orders</a>
+            </li>
+
+        </ul>
+    </div>
+    </div>
+
+    <div class="span9">
+        <div class="box" style="background: #141414; color: #666;">
+            <table class="table b-b">
+                <thead style="">
+                    <tr>
+                        <th>Image</th>
+                        <th>Product Name</th>
+                        <th>Quantity</th>
+                        <th>Unit Price</th>
+                        <th>Total Price</th>
+                    </tr>
+                </thead>
+                <tbody >
+                {% for order in order_detail %}
+                    {% with product=order.product  %}
+                        <tr>
+                            <td>
+                                <a href="{{ product.get__absolute_url }}">
+                                    <img src="{% if product.image %} {{ product.image.url }} {% else %} {% static '/assets/img/default.png' %} {% endif %}" alt="..." style="height: 130px; width: auto">
+                                </a>
+                            </td>
+                            <td>
+                                {{ product.name }}
+                            </td>
+                            <td>
+                                {{order.quantity}}
+                            </td>
+                            <td class="text-warn">$ {{ order.price }}</td>
+                            <td class="text-warn">$ {% widthratio order.quantity 1 order.price %}</td>
+                        </tr>
+                    {% endwith %}
+                {% endfor %}
+                </tbody>
+            </table>
+            {% block reject %}
+            <div class="p-b-md p-r-md" align="right">
+                <a href="{% url 'vendor_accept_order' order_id=order_detail.0.order_id %}" class="btn btn-success btn-sm m-l-md">Accept</a>
+                <a href="{% url 'vendor_reject_order' order_id=order_detail.0.order_id %}" class="btn btn-danger btn-sm m-l-md">Reject</a>
+            </div>
+            {% endblock %}
+        </div>
+
+    </div>
+
+{% endblock %}

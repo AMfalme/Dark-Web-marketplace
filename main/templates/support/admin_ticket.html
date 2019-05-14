@@ -1,0 +1,84 @@
+{% extends 'main/base.html' %}
+{% load static %}
+{% load widget_tweaks %}
+{% load avatar_tags %}
+{% block content %}
+
+<div class="span12">
+  <div class="well well-small" style="background-color: #0d0d0d; border: none">
+    <div class="row-fluid">
+      <div class="col-12 col-md-12 m-b-sm">
+        <div class="card bg-light">
+          <a href="{% url 'support:admin_ticket_list' %}" class="btn btn-success" style="font-size: 20px; padding: 5px 10px;">Ticket</a>
+          <a href="{% url 'support:admin_chat' %}" class="btn btn-dark" style="font-size: 20px; padding: 5px 10px;">Chat</a>
+          <div class="title-back" style="height: 75vh;">
+            <div class="col-md-12 col-sm-12 m-y-md">
+                <!-- BEGIN PORTLET-->
+                <div class="ticket-body font-light" id="chats">
+                    <label><h3>{{ ticket_title }}</h3></label>
+                    <label>{{ ticket_description }}</label>
+                    <div class="scroller" style="height: 320px; border-radius: 5px; border: #404040 solid 1px;" data-always-visible="1" data-rail-visible1="1">
+                        <ul class="tickets">
+                            {% for c in ticket_conversation %}
+                                {% if c.admin is True %}
+                                    <li class="in">
+                                        <div class="message span11">
+                                            <div class="body badge" style="clear: right; float: right; height: 4em; background-color: #2e2e2e; white-space: normal;">
+                                                {{ c.sub_description }}
+                                            </div>
+                                        </div>
+                                        <div class="span1">
+                                            <div style="margin: auto; height: 40px; width: 40px">
+                                                <img class="avatar" alt="" src="{% static 'main/img/icons/admin_avatar.png' %}"/>
+                                            </div>
+                                            <p style="text-align: center">admin</p>
+                                        </div>
+                                    </li>
+                                {% else %}
+                                    <li class="out">
+                                        <div class="span1">
+                                            <div style="margin: auto; height: 40px; width: 40px">
+                                                {% avatar c.ticket.name 40 class="img-circle img-responsive"%}
+                                            </div>
+                                            <p style="text-align: center">{{c.ticket.name.username}}</p>
+                                        </div>
+                                        <div class="message span11">
+                                            <div class="body badge" style="height: 4em; background-color: #2e2e2e; white-space: normal;">
+                                                {{ c.sub_description }}
+                                            </div>
+                                        </div>
+                                    </li>
+                                {% endif %}
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    <form method="post" action='{% url "support:admin_ticket_reply" %}'>
+                        {% csrf_token %}
+                        <div class="chat-form" style="margin-top: 30px">
+                            <div class="input-cont">
+                                <label>Ticket ID: {{ ticket_id }}</label>
+                                <input class="new-form-control" type="hidden" placeholder="" name="ticket_id" value="{{ ticket_id }}" readonly />
+                                <textarea class="new-form-control" style="min-height:160px; max-height:160px; min-width: 100%; max-width: 100%" placeholder="Type content here..." name="sub_description" id="id_description"/></textarea>
+                            </div>
+                            <div class="text-right">
+                                <button type="submit" class="btn btn-success" >Send</button>
+                                {% if ticket_state %}
+                                    <a href="{% url 'support:ticket_state_change' 0 ticket_id 1 %}" class="btn btn-danger">OPEN</a>
+                                {% else %}
+                                    <a href="{% url 'support:ticket_state_change' 1 ticket_id 1 %}" class="btn btn-default" >CLOSE</a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <!-- END PORTLET-->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+

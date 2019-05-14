@@ -1,0 +1,356 @@
+{% extends 'main/base.html' %}
+{% load static %}
+{% load ratings %}
+{% load static_ratings %}
+{% load widget_tweaks %}
+{% load auth_extras %}
+{% load avatar_tags %}
+{% block title %}
+{#    {% if category %}{{ category.name }} {% else %} Products {% endif %}#}
+{% endblock %}
+
+{% block content %}
+<div id="sidebar" class="span3">
+    <div class="box text-center " style="background: #141414">
+        <div class="p-a-md">
+           {% avatar vendor_user 240 class="img-circle img-responsive" id="user_avatar" %}
+           <p class="text-lg text-white block">{{ vendor_user.username }}</p>
+           {% comment %}<p class="text-md text-accent">{{ user.level }}</p>{% endcomment %}
+           {% comment %}
+           <div class="profile-content" >
+                <p class="" style="max-width: 50px">Review: </p>
+                <a href="#" class="text-warn m-r-md"><i class="fa fa-thumbs-up" style="color: warn;"></i> 13</a>
+                <a href="#" class="text-warn"><i class="fa fa-thumbs-down" style="color: warn"></i> 13</a>
+            </div>{% endcomment %}
+            <div class="profile-userbuttons">
+                {% comment %}<button type="button" class="btn btn-success btn-sm">Report Vendor</button>{% endcomment %}
+                <button type="button" class="btn btn-success btn-sm">Add to favorite</button>
+                <button type="button" class="btn btn-danger btn-sm">Message</button>
+            </div>
+
+        <!-- </div> -->
+    <!-- <div class="row b-t ">
+        <div class="col-xs-4 m-a-sm {% if '/account/profile/' in request.path %} text-warn {% else %} text-info {% endif %}">
+            <a href="{% url 'user_profile' %}">
+                <i class="fa fa-home"></i>
+            Overview </a>
+        </div>
+        <div class="col-xs-4 m-a-sm {% if request.path == '/account/settings/' %} text-warn {% else %} text-info {% endif %}">
+           {% if request.user|is_vendor %}
+           <a href="{% url 'user_vendor_listProducts' %}">
+            <i class="fa fa-user"></i>
+        Vendor Panel </a>
+        {% else %}
+        <p>User doesn't belong to vendor</p>
+        {% endif %}
+    </div>
+    <div class="col-xs-4 m-a-sm {% if '/account/orders/' in request.path %} text-warn {% else %} text-info {% endif %}">
+        <a href="{% url 'user_order_list' %}">
+            <i class="fa fa-shopping-cart"></i>
+        My Orders </a>
+    </div>
+    <div class="col-xs-4 m-a-sm {% if request.path == '/account/ratings/' %} text-warn {% else %} text-info {% endif %}">
+        <a href="#">
+            <i class="fa fa-tasks"></i>
+        Tasks </a>
+    </div>
+    <div class="col-xs-4 m-a-sm {% if request.path == '/account/help/' %} text-warn {% else %} text-info {% endif %}">
+        <a href="#">
+            <i class="fa fa-question"></i>
+        Help </a>
+    </div> -->
+    </div>
+</div>
+<div class="" style="margin-bottom: 20px">
+    <p class="side-header"> 1 btc price</p>
+    <ul class="side-back" style="margin-top: -16px">
+					<!--<li class="side-content" >
+                  		<i class="fa fa-btc"></i>BTC  1
+                  	</li>-->
+                  	<li class="side-content">
+                          <a style="color: #6ec2d1">USD  {{ crypto_data.btcusd }}</a>
+                      </li>
+                      <li class="side-content">
+                      	<a style="color: #6ec2d1">GBP  {{ crypto_data.btcgbp }}</a>
+                      </li>
+                      <li class="side-content">
+                      	<a style="color: #6ec2d1">EUR  {{ crypto_data.btceur }}</a>
+                      </li>
+                  </ul>
+              </div>
+          </div>
+
+          <div class="span9">
+            <div class="well well-small" style="background-color: #fff; border: none">
+               <div class="row-fluid">
+                <div class="bg-white">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <i class="lead text-muted">Contact Vendor</i>
+                            <div class="ml-4">
+                                <p><strong>Username   :</strong> {{vendor_user.username}} <span class="text-primary">({{ vendor_sold_count }}) ({{ vendor_rating }})</span> <span class="text-warning"><i class="fa fa-star"></i></span></p>
+                                <p><strong>FE Enable  :</strong> No</p>
+                                <p><strong>Join Date  :</strong> {{vendor_user.timestamp |date:'M d, Y' }}</p>
+                                <p><strong>Last active:</strong> {{vendor_user.last_login |date:'M d, Y' }}</p>
+                            </div>
+                        </div>
+                        <!-- Buttons -->
+                        <div class="col-md-6">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="float-right">
+                                        <a href="#" class="btn btn-danger rounded-0 mb-2">Report Vendor</a><br>
+                                        <form action="{% url 'vendor_public_profile' vendor_user.id %}" method="post">
+                                            {% csrf_token %}
+                                            <input type="submit" class="btn btn-success rounded-0 mb-2" value="Add To Favourite">
+                                        </form>
+                                        <a href="#" class="btn btn-success rounded-0">Send Message</a><br>
+                                    </div>
+                                </div>
+                                {% if request.user.is_authenticated and request.user.id != vendor_user %}
+                                <div class="col-md-12">
+                                    <div class="float-right">
+                                        <p class="mr-5">Trust?</p>
+                                        <form action="{% url 'trust_vendor' %}" method="post">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="next" value="{{ request.path }}">
+                                            <button type="submit" name="vendor_id" class="btn btn-secondary" value="{{ vendor_user.id }}"><i class="fa fa-thumbs-up"></i></button>
+                                            {{ total_trusts }}
+                                        </form>
+                                        <form action="{% url 'untrust_vendor' %}" method="post">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="next" value="{{ request.path }}">
+                                            <button type="submit" name="vendor_id" class="btn btn-secondary" value="{{ vendor_user.id }}"><i class="fa fa-thumbs-down"></i></button>
+                                            {{ total_untrusts }}
+                                        </form>
+                                    </div>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white" style="">
+                    <div class="tab-content">
+                        <!-- Profile -->
+                        <div role="tabpanel" class="tab-pane active" id="profile">
+                            <!-- Term & Condition -->
+                            <h4 class="mt-2">Term & Condition</h4>
+                            <div class="bg-light">
+                                <p class="p-3">{{vendor_term}}</p>
+                            </div>
+                            <!-- Public PGP Key -->
+                            <h4 class="mt-2">Public PGP Key</h4>
+                            <div class="bg-light">
+                                <!-- <p class="p-3">{{vendor_user.pgp_key}}</p> -->
+
+                                <pre>{{vendor_user.pgp_key}}</pre>
+                            </div>
+                        </div>
+                        <!-- Rating -->
+                        <div role="tabpanel" class="tab-pane active" id="rating">
+                            <!-- Rating -->
+                            <h4 class="mt-2">Ratings</h4>
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                      <th>Product</th>
+                                      <th>Average Rating</th>
+                                    </tr>
+                                  </thead>
+                                <tbody>
+                                {% for name, value in rating_dict.items %}
+                                    {% comment %}<a href="{% url 'user_order_detail' order_id=order.id %}">{% endcomment %}
+                                        <tr>
+                                            <td>
+                                                {{name}}
+                                            </td>
+                                            <td>
+                                                {% static_ratings value %}
+                                            </td>
+                                        </tr>
+                                    </a>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                 </div>
+             </div>
+         </div>
+     </div>
+ </div>
+</div>
+
+
+
+
+{% comment %}<div class="container-fluid mt-5">
+    <div class="row pt-3">
+        <div class="col-md-3">
+            <img src="{% static '/main/img/icons/profile_user.png' %}" alt="" class="w-100">
+        </div>
+        <!-- Navigation -->
+        <div class="col-md-9">
+            <!-- Top Nav -->
+            <div class="row">
+                <div class="col-md-12">
+                    <nav class="navbar navbar-expand-lg navbar-light bg-white">
+                        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+
+                        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                            <ul class="navbar-nav ml-auto">
+                                <li class="nav-item active">
+                                    <a class="nav-link text-primary" href="#">Shop <span class="sr-only">(current)</span></a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-primary" href="#">Messages: 0</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-primary" href="#">alienessential</a>
+                                </li>
+                            </ul>
+                            <form class="form-inline">
+                                <div class="input-group">
+                                    <input type="text" class="form-control"  aria-label="Username" aria-describedby="basic-addon1">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text" id="basic-addon1"><i class="fa fa-search"></i></span>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </nav>
+                </div>
+            </div>
+            <!-- Logout -->
+            <div class="row">
+                <div class="col-md-12">
+                    <ul class="nav float-right">
+                        <li class="nav-item">
+                            <a class="nav-link text-primary" href="#">
+                                Bitcoin (BTC)
+                                <p class="text-center">B0.00</p>
+                            </a>
+                        </li>
+                        <!--<li class="nav-item">-->
+                            <!--<a class="nav-link text-primary" href="#">-->
+                                <!--<i class="fa fa-cart-arrow-down fa-2x"></i>-->
+                                <!--</a>-->
+                                <!--</li>-->
+                                <!--<li class="nav-item">-->
+                                    <!--<a class="nav-link text-primary" href="#">Logout</a>-->
+                                    <!--</li>-->
+                                </ul>
+                            </div>
+                        </div>
+                        <!-- Contact Info -->
+                        <hr>
+                        <div class="bg-white">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <i class="lead text-muted">Contact Vendor</i>
+                                    <div class="ml-4">
+                                        <p><strong>Username   :</strong> {{vendor_user.username}} <span class="text-primary">(170) (4.68)</span> <span class="text-warning"><i class="fa fa-star"></i></span></p>
+                                        <p><strong>FE Enable  :</strong> No</p>
+                                        <p><strong>Join Date  :</strong> {{vendor_user.timestamp}}</p>
+                                        <p><strong>Last active:</strong> {{vendor_user.last_login}}</p>
+                                    </div>
+                                </div>
+                                <!-- Buttons -->
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="float-right">
+                                                <a href="#" class="btn btn-danger rounded-0 mb-2">Report Vendor</a><br>
+                                                <a href="#" class="btn btn-success rounded-0 mb-2">Add To Favourite</a><br>
+                                                <a href="#" class="btn btn-success rounded-0">Send Message</a><br>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <div class="float-right">
+                                                <p class="mr-5">Trust?</p>
+                                                <a href="#" class="text-dark"><span class="btn btn-secondary"><i class="fa fa-thumbs-up"></i></span> 13</a>
+                                                <a href="#" class="text-dark"><span class="btn btn-secondary"><i class="fa fa-thumbs-down"></i></span> 13</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Profile info -->
+                <div class="row">
+                    <!-- Exchange -->
+                    <div class="col-md-3">
+                        <p class="text-muted"><i class="fa fa-bitcoin"></i> <strong>Exchange</strong></p>
+                        <hr>
+                        <hr>
+                        <ol class="list-unstyled">
+                          <li  class="active">
+                              <a href="#">BTC  1</a>
+                          </li>
+
+                          <li  class="active">
+                              <a href="#">USD  {{ crypto_data.btcusd }}</a>
+                          </li>
+                          <li  class="active">
+                              <a href="#">GBP  {{ crypto_data.btcgbp }}</a>
+                          </li>
+                          <li  class="active">
+                              <a href="#">EUR  {{ crypto_data.btceur }}</a>
+                          </li>
+
+                      </ol>
+                      <!-- Onion Mirror-->
+                      <p class="text-muted mt-5"><strong>Onion Mirror</strong> <i class="fa fa-download"></i></p>
+                      <hr>
+                      <a href="#">https://thehiddenwiki.org/2017/05/08/recent-downtime-of-the-hidden-wiki-in-march-2017/</a>
+                  </div>
+                  <!-- Profile -->
+                  <div class="col-md-9">
+                    <ul class="nav nav-tabs" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link active" href="#profile" role="tab" data-toggle="tab">profile</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#rating" role="tab" data-toggle="tab">Rating</a>
+                        </li>
+                    </ul>
+
+                    <!-- Tab panes -->
+                    <div class="tab-content">
+                        <!-- Profile -->
+                        <div role="tabpanel" class="tab-pane active" id="profile">
+                            <!-- Term & Condition -->
+                            <h4 class="mt-2">Term & Condition</h4>
+                            <div class="bg-light">
+                                <p class="p-3">{{vendor_term}}</p>
+                            </div>
+                            <!-- Public PGP Key -->
+                            <h4 class="mt-2">Public PGP Key</h4>
+                            <div class="bg-light">
+                                <!-- <p class="p-3"></p> -->
+                                <code>{{vendor_user.pgp_key}}</code>
+                            </div>
+                        </div>
+                        <!-- Rating -->
+                        <div role="tabpanel" class="tab-pane" id="rating">
+                          <div role="tabpanel" class="tab-pane active" id="ratings">
+                            <ul>
+                               {% for mykey,myvalue in rating_dict.items %}
+                               <li>{{myvalue}}  => {% ratings mykey %}</li>
+                               {% endfor %}
+                           </ul>
+
+                       </div>
+
+                   </div>
+               </div>
+           </div>
+       </div>
+   </div>{% endcomment %}
+   {% endblock %}
+

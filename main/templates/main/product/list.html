@@ -1,0 +1,129 @@
+{% extends 'main/base.html' %}
+{% load static %}
+{% load ratings %}
+{% load static_ratings %}
+{% block title %}
+    {% if category %}{{ category.name }} {% else %} Products {% endif %}
+{% endblock %}
+
+{% block content %}
+    <div id="sidebar" class="span3">
+      <div class="" style="margin-bottom: 20px">
+        <p class="side-header">Search</p>
+        <ul class="side-back" style="margin-top: -16px">
+          <form class="form-inline" action="{% url 'search' %}" method="get">
+            {% csrf_token %}
+            <div class="">
+                <!--<label for="category">Category :</label>-->
+              <select  name="category" class="side-search"  id="category" value="">
+                  <option value="">Select Category</option>
+                  {% for c in categories %}
+                    <option value="{{ c.name }}" {% if c.name == request.GET.category %} selected {% endif %}>{{ c.name }}</option>
+                    {% for sc in subcategories %}
+                      {% if c.id == sc.category_id %}
+                        <option value="{{ sc.name }}" {% if sc.name == request.GET.subcategory %} selected {% endif %}>&nbsp;&nbsp;&nbsp;{{ sc.name }}</option>
+                      {% endif %}
+                    {% endfor %}  
+                  {% endfor %}
+              </select>
+            </div>
+            <div class="">
+                <!--<label for="price">Price :</label>-->
+                <input type="number" id="price" class="side-search" placeholder="Enter Price" min="0" name="price" value="{{ request.GET.price }}" />
+            </div>
+            <div class="">
+                <!--<label for="country">Shipped From :</label>-->
+              <select  name="country" class="side-search" id="country" value="">
+                <option value="">Select Country</option>
+                {% for c in countries %}
+                    <option value="{{ c.code }}" {% if c.code == request.GET.country %} selected {% endif %}>{{ c.name }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div>
+              <button type="submit" class="side-search">Search</button>
+            </div>
+          </form>
+        </ul>
+      </div>
+
+      <div class="" style="margin-bottom: 20px">
+        <p class="side-header">category</p>
+        <ul class="side-back" style="margin-top: -16px">
+          <li class="side-content" ><a href="{% url 'product_list' %}" style="color: #6ec2d1">All</a></li>
+          {% for c in categories %}
+
+          <li class="side-content" >
+            <a href="{{ c.get_absolute_url }}" style="color: #6ec2d1"><span class="icon-chevron-right"></span>&nbsp;&nbsp;{{ c.name }}</a>
+          </li>
+          {% for sc in subcategories %}
+            {% if c.id == sc.category_id %}
+            <li class="side-content" >
+              &nbsp;&nbsp;&nbsp;<a href="{{ sc.get_absolute_url }}" style="color: #6ec2d1"><span class="icon-angle-right"></span>&nbsp;&nbsp;{{ sc.name }}</a>
+            </li>
+            {% endif %}
+          {% endfor %}  
+          {% endfor %}
+        </ul>
+      </div>
+
+      <div class="" style="margin-bottom: 20px">
+        <p class="side-header"> 1 btc price</p>
+        <ul class="side-back" style="margin-top: -16px">
+            <!--<li class="side-content" >
+                <i class="fa fa-btc"></i>BTC  1
+            </li>-->
+            <li class="side-content">
+                <a style="color: #6ec2d1">USD  {{ crypto_data.btcusd }}</a>
+            </li>
+            <li class="side-content">
+                <a style="color: #6ec2d1">GBP  {{ crypto_data.btcgbp }}</a>
+            </li>
+            <li class="side-content">
+                <a style="color: #6ec2d1">EUR  {{ crypto_data.btceur }}</a>
+            </li>
+        </ul>
+      </div>
+
+    </div>
+    <div class="span9">
+    {% if products %}
+      <div class="well well-small" style="background-color: #0d0d0d; border: none">
+        <div class="row-fluid">
+          <ul class="thumbnails">
+            {% for product in products %}
+            <li class="span3">
+              <div class="thumbnail">
+                <a class="zoomTool" href="{{ product.get_absolute_url }}" title="add to cart"><span class="icon-search"></span> QUICK VIEW</a>
+                <a  href="{{ product.get_absolute_url }}"><img style="height:280px;width:100%" src="{% if product.image %} {{ product.image.url }} {% else %} {% static 'assets/img/default.png' %} {% endif %}" alt="" ></a>
+                <div class="caption">
+                  <!--<a href="{{ product.get_absolute_url}}"><h3 class="product-name" style="text-align: center">{{ product.name}}</h3></a>-->
+                  <h3 class="product-name" style="text-align: center; height: 2.5em">{{ product.name}}</h3>
+                  {% comment %}<h3>
+                  {% if ratingsObject %}
+                  {% ratings ratingsObject %}
+                  {% else %} Rating Inactive for this Product {% endif %}
+                  </h3>{% endcomment %}
+                  <h4 class="text-info" style="height: 1.5em" align="center">{{ product.productOwnerID }}</h4>
+                  <h4 class="text-info" style="height: 1.5em" align="center">{{ product.country.name }}</h4>
+                  <h4 class="text-info" style="height: 2em" align="center">{{ sold_cnt|get:product.id }} item{{ sold_cnt|get:product.id|pluralize }} sold</h4>
+                  <h4 class="text-info" style="height: 2em" align="center">{%  static_ratings ratings|get:product.id %}</h4>
+                  <h4>
+                    <a class="defaultBtn" href="{{ product.get_absolute_url }}" title="Click to view" style="margin-left: 5px"><span class="icon-zoom-in"></span></a>
+                    <span class="pull-right" style="padding-right: 10px">${{ product.price}}</span>
+                    <!-- <a class="shopBtn" href="" title="add to cart"><span class="icon-plus"></span></a> -->
+                  </h4>
+                </div>
+              </div>
+            </li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+    {% else%}
+      <div class="well well-small" style="background-color: #141414">
+        <p style="color: #6ec2d1">There is no searching result</p>
+      </div>
+    {% endif %}
+    </div>
+{% endblock %}

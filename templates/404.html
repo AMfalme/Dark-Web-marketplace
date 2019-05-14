@@ -1,0 +1,22 @@
+{% extends "admin/base_site.html" %}
+{% load i18n %}
+
+{% block title %}{% trans 'Page not found' %}{% endblock %}
+
+{% block branding %}
+<h1 id="site-name"><a href="{% url 'product_list' %}">{{ site_header|default:_('Dark Web Admin') }}</a></h1>
+{% endblock %}
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+<a href="{% url 'product_list' %}">{% trans 'Home' %}</a>
+</div>
+{% endblock %}
+
+{% block content %}
+
+<h2>{% trans 'Page not found' %}</h2>
+
+<p>{% trans "We're sorry, but the requested page could not be found." %}</p>
+
+{% endblock %}
