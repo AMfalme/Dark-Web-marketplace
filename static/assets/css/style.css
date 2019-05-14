@@ -68,7 +68,7 @@ hr.soften {margin: 8px 0;background: #DDD;}
 .footer a{color:#bbb; font-size:12px;}
 .copyright {clear: both; padding: 8px; border-top: 1px solid #CCC; font-size: 13px; background: #f2f2f2; box-shadow: 0 0 3px #B1AFAF;}
 .topNav{padding: 0;height: 5rem;border-bottom: 1px solid #CCC;background: #f2f2f2;box-shadow: 0 0 3px #B1AFAF;}
-.topNav a{color:#333; font-size:12px; font-weight:bold; display:inline-block;  padding:8px 4px;}
+.topNav a{color:#333; font-size:12px; font-weight:bold; display:inline-block;  }
 .topNav a:hover, .topNav a.active{color:#fff;  text-decoration:none}
 .socialNw a{width:24px; height:24px; line-height:24px; display:inline-block; padding:3px; margin-top:3px; font-size:21px; border-radius:50%; background:#999; color:#fff; text-align:center; }
 .cntr{text-align:center}
