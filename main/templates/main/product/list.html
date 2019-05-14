@@ -19,11 +19,6 @@
                   <option value="">Select Category</option>
                   {% for c in categories %}
                     <option value="{{ c.name }}" {% if c.name == request.GET.category %} selected {% endif %}>{{ c.name }}</option>
-                    {% for sc in subcategories %}
-                      {% if c.id == sc.category_id %}
-                        <option value="{{ sc.name }}" {% if sc.name == request.GET.subcategory %} selected {% endif %}>&nbsp;&nbsp;&nbsp;{{ sc.name }}</option>
-                      {% endif %}
-                    {% endfor %}  
                   {% endfor %}
               </select>
             </div>
@@ -54,15 +49,8 @@
           {% for c in categories %}
 
           <li class="side-content" >
-            <a href="{{ c.get_absolute_url }}" style="color: #6ec2d1"><span class="icon-chevron-right"></span>&nbsp;&nbsp;{{ c.name }}</a>
+            <a href="{{ c.get_absolute_url }}" style="color: #6ec2d1"><span class="icon-chevron-right"></span>{{ c.name }}</a>
           </li>
-          {% for sc in subcategories %}
-            {% if c.id == sc.category_id %}
-            <li class="side-content" >
-              &nbsp;&nbsp;&nbsp;<a href="{{ sc.get_absolute_url }}" style="color: #6ec2d1"><span class="icon-angle-right"></span>&nbsp;&nbsp;{{ sc.name }}</a>
-            </li>
-            {% endif %}
-          {% endfor %}  
           {% endfor %}
         </ul>
       </div>

@@ -24,24 +24,6 @@ class Category(models.Model):
     def get_absolute_url(self):
         return reverse('product_list_by_category', args=[self.slug])
 
-class SubCategory(models.Model):
-    category = models.ForeignKey(Category, related_name='products', on_delete=models.CASCADE)
-    name = models.CharField(max_length=150, db_index=True)
-    slug = models.SlugField(max_length=150, unique=True ,db_index=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
-    class Meta:
-        ordering = ('name', )
-        verbose_name = 'subcategory'
-        verbose_name_plural = 'subcategories'
-
-    def __str__(self):
-        return self.name
-
-    def get_absolute_url(self):
-        return reverse('product_list_by_subcategory', args=[self.slug])
-
 
 class Message(models.Model):
     sender = models.ForeignKey(User, related_name='message_sender', on_delete=models.CASCADE)
@@ -61,8 +43,7 @@ class Message(models.Model):
 
 
 class Product(models.Model):
-    category = models.ForeignKey(Category, on_delete=models.CASCADE)
-    subcategory = models.ForeignKey(SubCategory, on_delete=models.CASCADE)
+    category = models.ForeignKey(Category, related_name='products', on_delete=models.CASCADE)
     name = models.CharField(max_length=100, db_index=True)
     slug = models.SlugField(max_length=100, db_index=True)
     description = models.TextField(blank=True)

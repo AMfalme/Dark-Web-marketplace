@@ -94,7 +94,7 @@ class User(AbstractBaseUser):
 
     @property
     def is_vendor(self):
-        return self.vendor
+        return self.admin
 
     @property
     def get_code_bip39(self):

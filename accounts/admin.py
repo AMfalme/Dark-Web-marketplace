@@ -4,8 +4,7 @@ from django.contrib.auth.models import Group
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from accounts.models import VendorTerm
 from .forms import UserAdminCreationForm, UserAdminChangeForm
-from django.contrib.admin import AdminSite
-from .login import CustomLoginForm
+
 
 User = get_user_model()
 
@@ -44,13 +43,6 @@ class UserAdmin(BaseUserAdmin):
     ordering = ('pk',)
     filter_horizontal = ()
 
-class CustomLoginAdminSite(AdminSite):
-    site_title = 'Dark Web Admin'
-    site_header = 'Dark Web Admin'
-    index_title = 'CustomLogin'
-    login_form = CustomLoginForm
-
-admin.site = CustomLoginAdminSite()
 
 admin.site.register(User, UserAdmin)
 admin.site.register(VendorTerm)

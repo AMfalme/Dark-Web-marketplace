@@ -70,7 +70,7 @@
                             {% endfor %}
                         </ul>
                     </div>
-                    <form method="post" action='{% url "support:admin_chat_post_message" %}' style="margin-top: 20px">
+                    <form method="post" action='{% url "support:chat_post_message" %}' style="margin-top: 20px">
                         {% csrf_token %}
                         <div class="chat-form">
                             <div class="input-cont">
@@ -79,7 +79,6 @@
                             <div class="btn-cont text-right">
                                 <button type="submit" class="btn btn-success" >Send</button>
                             </div>
-                            <input class="new-form-control" type="hidden" placeholder="" name="chat_id" value="{{ chat.id }}" readonly />
                         </div>
                     </form>
                     {% endif %}

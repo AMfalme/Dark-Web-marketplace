@@ -19,14 +19,14 @@
 	<div class="topNav" style="background-color: #0c0c0c">
 		<div class="container" style="height: 5rem">
 			<div class="alignR" style="height: 5rem">
-				<div class="pull-left span3">
+				<div class="pull-left span4">
 					<!--<a href="#"><span class="icon-twitter"></span></a>
 					<a href="#"><span class="icon-facebook"></span></a>
 					<a href="#"><span class="icon-youtube"></span></a>
 					<a href="#"><span class="icon-tumblr"></span></a>-->
-					<h3>
+					<h3 style="display:none;">
 						<a class="logo" href="{% url 'product_list' %}">
-							<img src="{% static 'assets/img/logo.png' %}" >
+							<img src="{% static 'assets/img/logo-bootstrap-shoping-cart.png' %}" >
 						</a>
 					</h3>
 				</div>
@@ -42,7 +42,6 @@
                 {% if request.user.is_authenticated %}
                     <a href="{% url 'support:support_list' %}"><p class="header"><span class="fa fa-question"></span>{% if request.user.is_admin %} Admin Support{% else %} Supoort{% endif %}</p></a>
                 {% endif %}
-                {% if request.user.is_admin %}
                 <a href="{% url 'cart:cart_detail' %}" style="margin-right:20px">
                     <p class="header">
                         <span class="icon-shopping-cart"></span>
@@ -55,7 +54,6 @@
                         {% endwith %}Item(s)
                     </p>
                 </a>
-                {% endif %}
 				<!--<a href="index.html"><h3><span class="icon-home"></span> Home</h3></a>
 				<a href="#"><span class="icon-user"></span> My Account</a>
 				<a href="register.html"><span class="icon-edit"></span> Free Register </a>

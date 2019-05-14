@@ -13,7 +13,6 @@ from dark_web.mixins import RequestFormAttachMixin
 from accounts.models import User as VendorUser
 from accounts.models import VendorTerm, VendorFavorite
 from main.models import Product, Message
-from main.views import crypto_currencies
 from django.db.models import Q
 from datetime import timedelta
 from django.utils import timezone
@@ -23,6 +22,7 @@ from django.db.models import Sum
 
 from django.http import HttpResponseRedirect
 from django.utils.safestring import mark_safe
+from background.views import crypto_currencies
 # Create your views here.
 
 
@@ -165,8 +165,9 @@ def signup(request):
             login(request, user)
 
             code_bip39 = user.code_bip39
-            msg = "Hello " + user.username.upper() + ". Welcome to Euromarket. <p><p>\
-                    THIS IS YOUR RECOVERY SEED. WRITE IT DOWN. IN THE CASE YOU LOST ACCESS YOU CAN ONLY RECOVERY YOUR ACCOUNT IF YOU CAN PROVIDE US THE CORRECT WORDCOMBINATION.<br>" + code_bip39.upper()
+            msg = "Hello " + user.username.upper() + ". Welcome to Euromarket.<p>    \
+                    THIS IS YOUR RECOVERY SEED. WRITE IT DOWN. IN THE CASE YOU LOST ACCESS YOU CAN ONLY RECOVERY YOUR ACCOUNT IF YOU CAN PROVIDE US THE CORRECT WORDCOMBINATION."
+                    #Code: " + code_bip39.upper()
 
             messages.success(request, mark_safe(msg))
             return redirect("product_list")

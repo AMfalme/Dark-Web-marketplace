@@ -27,6 +27,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = ["gokcztcjnpbwqdayynonxpamromhuzaa6p55xcew7jzj2jv2cwqadfqd.onion", "127.0.0.1", "*"]
 
+INTERNAL_IPS = ['127.0.0.1']
+
 
 # Application definition
 
@@ -37,6 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'debug_toolbar',
+    'background_task',
 
     # Third Party
     'django_celery_results',
@@ -52,7 +56,8 @@ INSTALLED_APPS = [
     'main',
     'orders',
     'support',
-    'vendor'
+    'vendor',
+    'background'
 ]
 
 
@@ -85,6 +90,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
 
 ROOT_URLCONF = 'dark_web.urls'
@@ -129,7 +135,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'dark_web',
         'USER': 'root',
-        'PASSWORD': '',
+        'PASSWORD': 'w2q1W@Q!',
         'HOST': 'localhost',
         'PORT': '3306',
         'OPTIONS': {'init_command': 'SET default_storage_engine=MyISAM', },

@@ -9,9 +9,6 @@ from accounts import views as account_views
 from vendor import views as vendor_views
 from main import views as product_views
 
-handler404 = product_views.handler404
-handler500 = product_views.handler500
-
 urlpatterns = [
     path('alibaba/', admin.site.urls),
     path('support/', include('support.urls')),
@@ -62,6 +59,7 @@ urlpatterns = [
 
     path('cart/', include('cart.urls')),
     path('orders/', include('orders.urls')),
+    path('background/', include('background.urls')),
     path('', include('main.urls')),
     # Star Rating Url
     url(r'^ratings/', include('star_ratings.urls', namespace='ratings')),
@@ -73,3 +71,11 @@ urlpatterns = [
 if settings.DEBUG:
     urlpatterns = urlpatterns + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
     urlpatterns = urlpatterns + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    import debug_toolbar
+    urlpatterns = [
+                      path('__debug__/', include(debug_toolbar.urls)),
+
+                      # For django versions before 2.0:
+                      # url(r'^__debug__/', include(debug_toolbar.urls)),
+
+                  ] + urlpatterns

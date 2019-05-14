@@ -3,9 +3,8 @@ from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import ListView
 from django.shortcuts import render, get_object_or_404, redirect
-from cryptowatch_client import Client
 
-from .models import Category, Product, Message, SubCategory
+from .models import Category, Product, Message
 from django_countries import countries
 from accounts.models import User, VendorTerm
 from accounts.forms import LoginForm
@@ -13,39 +12,17 @@ from django.db.models import Q
 from django.db.models import Avg, Sum
 
 from django.template.defaulttags import register
+from background.views import crypto_currencies
 
 
 @register.filter
 def get(dictionary, key):
     return dictionary.get(key)
 
-def crypto_currencies():
-    btcgbp_price = 0
-    btcusd_price = 0
-    btceur_price = 0
-    try:
-        client = Client(timeout=30)
-        btcgbp = client.get_markets_price(exchange='gdax', pair='btcgbp')
-        btcusd = client.get_markets_price(exchange='gdax', pair='btcusd')
-        btceur = client.get_markets_price(exchange='gdax', pair='btceur')
-        btcgbp_response = btcgbp.json()
-        btcusd_response = btcusd.json()
-        btceur_response = btceur.json()
-        btcgbp_price = btcgbp_response.get('result').get('price')
-        btcusd_price = btcusd_response.get('result').get('price')
-        btceur_price = btceur_response.get('result').get('price')
-    except Exception as e:
-        pass
-    crypto_price = {'btcusd': btcusd_price, 'btcgbp': btcgbp_price, 'btceur': btceur_price}
-    return crypto_price
-
 
 def product_list(request, category_slug=None):
-    if request.user.is_authenticated == False:
-        return redirect("signin")
     category = None
     categories = Category.objects.all()
-    subcategories = SubCategory.objects.all()
     products = Product.objects.filter(available=True)
     message = len(Message.objects.filter(check=False))
     #message = len(Message.objects.all())
@@ -73,59 +50,15 @@ def product_list(request, category_slug=None):
     context = {
         'category': category,
         'categories': categories,
-        'subcategories': subcategories,
         'products': products,
         'ratings': ratings,
         'sold_cnt': sold_cnt,
-        'crypto_data': crypto_data,
+        # 'crypto_data': crypto_data,
         'countries': countries,
         'form': form,
         'new_message': message,
     }
-    return render(request, 'main/product/list.html', context)
 
-def product_list_by_subcategory(request, subcategory_slug=None):
-    if request.user.is_authenticated == False:
-        return redirect("signin")
-    subcategory = None
-    categories = Category.objects.all()
-    subcategories = SubCategory.objects.all()
-    products = Product.objects.filter(available=True)
-    message = len(Message.objects.filter(check=False))
-    #message = len(Message.objects.all())
-    form = LoginForm
-    if subcategory_slug:
-        subcategory = get_object_or_404(SubCategory, slug=subcategory_slug)
-        products = Product.objects.filter(subcategory=subcategory)
-
-    #cryptocurrenies Data
-    crypto_data = crypto_currencies()
-
-    ratings = {}
-    sold_cnt = {}
-    for product in products:
-        rating_total = 0
-        rating_count = 0
-        for order_item in product.order_items.filter(order__paid='8'):
-            for rating in order_item.ratings.all():
-                rating_total += rating.total * order_item.quantity
-                rating_count += rating.count * order_item.quantity
-        ratings[product.id] = 0 if rating_count == 0 else rating_total/rating_count
-        sold_cnt[product.id] = product.order_items.filter(order__paid='8').aggregate(Sum('quantity'))['quantity__sum']
-        sold_cnt[product.id] = 0 if sold_cnt[product.id] is None else sold_cnt[product.id]
-
-    context = {
-        'subcategory': subcategory,
-        'categories': categories,
-        'subcategories': subcategories,
-        'products': products,
-        'ratings': ratings,
-        'sold_cnt': sold_cnt,
-        'crypto_data': crypto_data,
-        'countries': countries,
-        'form': form,
-        'new_message': message,
-    }
     return render(request, 'main/product/list.html', context)
 
 
@@ -275,8 +208,3 @@ def delete_message(request, message_id=''):
     messages.success(request, msg)
     return redirect("inbox_list")
 
-def handler404(request):
-    return render(request, '404.html', status=404)
-
-def handler500(request):
-    return render(request, '500.html', status=500)

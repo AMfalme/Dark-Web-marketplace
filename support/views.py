@@ -17,7 +17,7 @@ def customer_chat(request):
 
         else:
             cur_chat = Chat.objects.filter(name=request.user).first()
-            messages = ChatMessage.objects.filter(chat=cur_chat).order_by('id')
+            messages = ChatMessage.objects.filter(chat=cur_chat)
             message_form = ChatMessageForm(request.POST)
 
             ChatMessage.objects.filter(chat=cur_chat, read=False, admin=True).update(read=True)
@@ -49,7 +49,7 @@ def admin_chat(request, c_id=None):
             return render(request, 'support/admin_chat.html', context)
         else:
             cur_chat = Chat.objects.filter(id=c_id).first()
-            messages = ChatMessage.objects.filter(chat=cur_chat).order_by('id')
+            messages = ChatMessage.objects.filter(chat=cur_chat)
             message_form = ChatMessageForm(request.POST)
 
             ChatMessage.objects.filter(chat=cur_chat, read=False, admin=False).update(read=True)
@@ -69,24 +69,8 @@ def admin_chat(request, c_id=None):
     else:
         return render(request, 'main/nlogin.html')
 
-def admin_chat_post_message(request):
-    if request.user.is_authenticated:
-        message_form = ChatMessageForm(request.POST)
-        c_id = message_form['chat_id'].value()
-        chat = Chat.objects.filter(id=c_id).first()
 
-        if message_form.is_valid():
-            message = ChatMessage.objects.create(
-                    chat=chat,
-                    name=request.user,
-                    message=message_form['message'].value(),
-                    admin=1)
-            message.save()
-        return HttpResponseRedirect(reverse('support:admin_chat', kwargs={'c_id': c_id}))
-    else:
-        return render(request, 'main/nlogin.html')
-
-def customer_chat_post_message(request):
+def chat_post_message(request):
     if request.user.is_authenticated:
         chat = Chat.objects.filter(name=request.user).first()
         message_form = ChatMessageForm(request.POST)

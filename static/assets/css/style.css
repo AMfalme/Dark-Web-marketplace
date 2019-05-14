@@ -5,9 +5,8 @@ body{background:url(../img/background1.png) repeat 0 0; }
 #header h1{margin:0;line-height:1em }
 #header h1.dotmark{line-height:1.5em;}
 #header{ padding-top:5.5rem;}
-.logo {padding-top: 11px;display: block; text-align: left;}
-/* .logo img {width: 135px;height: 70px;} */
-.logo img {width: 50%;}
+.logo {padding-top: 11px;display: block;}
+.logo img {width: 135px;height: 70px;}
 .logo span{display:none}
 .row-fluid ul.thumbnails li.span3 {height: 500px;}
 .row-fluid .span3 {width: 23.8%;}

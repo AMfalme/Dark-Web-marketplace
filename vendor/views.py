@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404
 from vendor.forms import ProductForm
-from main.models import Product, Message, Category, SubCategory
+from main.models import Product, Message
 from orders.models import Order, OrderItem, Pay
 from accounts.models import User
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -12,7 +12,7 @@ from django.contrib import messages
 from django.shortcuts import redirect
 from django.core.files.storage import FileSystemStorage
 from datetime import date
-from django.views import View
+
 
 # Create your views here.
 # get current user
@@ -26,11 +26,8 @@ def add_product(request):
     form = ProductForm()
     owner_id = get_user_id(request)
 
-    categories = Category.objects.all()
-    subcategories = SubCategory.objects.all()
-
     if request.user.is_vendor:
-        return render(request, 'add_product.html', {'form': form, 'categories': categories, 'subcategories': subcategories, 'owner_id': owner_id})
+        return render(request, 'add_product.html', {'form': form, 'owner_id': owner_id})
     else:
         return HttpResponseRedirect('/')
 
@@ -76,7 +73,6 @@ def update_product(request):
             stock = data.get('stock')
             payout_address = data.get('payout_address')
             category = data.get('category')
-            subcategory = data.get('subcategory')
             country = data.get('country')
             owner_id = data.get('productOwnerID')
             image = product.image
@@ -98,7 +94,6 @@ def update_product(request):
                                                          stock=stock,
                                                          payout_address=payout_address,
                                                          category=category,
-                                                         subcategory=subcategory,
                                                          country=country,
                                                          productOwnerID=owner_id,
                                                          image=image)
@@ -110,13 +105,9 @@ def update_product(request):
 
 def edit_product(request, product_id):
     product = get_object_or_404(Product, id=product_id)
-    subcategory_id = product.subcategory_id
     form = ProductForm(request.POST or None, instance=product)
     owner_id = get_user_id(request)
-    categories = Category.objects.all()
-    subcategories = SubCategory.objects.all()
-
-    return render(request, 'update_product.html', {'form': form, 'categories': categories, 'subcategories': subcategories, 'owner_id': owner_id, 'product_id': product_id, 'subcategory_id': product.subcategory_id})
+    return render(request, 'update_product.html', {'form': form, 'owner_id': owner_id, 'product_id': product_id})
 
 
 # Save product
@@ -125,6 +116,7 @@ def save_product(request):
         form = ProductForm(request.POST, request.FILES)
 
         if form.is_valid():
+            print("Hello")
             product = form.save(commit=False)
             product.productOwnerID = request.user
             product.save()  # Now you can send it to DB
@@ -182,7 +174,6 @@ class VendorNewOrderListView(LoginRequiredMixin, ListView):
     def get(self, request, *args, **kwargs):
         if not self.request.user.is_vendor:
             return HttpResponseRedirect('/')
-        return render(request, self.template_name, {'context_object_name': self.context_object_name})
 
     def get_queryset(self):
         return Order.objects.filter(paid=2, user=self.request.user).select_related('payment')
@@ -195,7 +186,6 @@ class VendorNewOrderDetailView(LoginRequiredMixin, DetailView):
     def get(self, request, *args, **kwargs):
         if not self.request.user.is_vendor:
             return HttpResponseRedirect('/')
-        return render(request, self.template_name, {'context_object_name': self.context_object_name})    
 
     def get_object(self, queryset=None):
         order_id = self.kwargs.get("order_id")
@@ -210,7 +200,6 @@ class VendorShippedOrderListView(LoginRequiredMixin, ListView):
     def get(self, request, *args, **kwargs):
         if not self.request.user.is_vendor:
             return HttpResponseRedirect('/')
-        return render(request, self.template_name, {'context_object_name': self.context_object_name})
 
     def get_queryset(self):
         return Order.objects.filter(paid=7).select_related('payment')
@@ -223,7 +212,6 @@ class VendorShippedOrderDetailView(LoginRequiredMixin, DetailView):
     def get(self, request, *args, **kwargs):
         if not self.request.user.is_vendor:
             return HttpResponseRedirect('/')
-        return render(request, self.template_name, {'context_object_name': self.context_object_name})
 
     def get_object(self, queryset=None):
         order_id = self.kwargs.get("order_id")
@@ -238,7 +226,6 @@ class VendorCompleteOrderListView(LoginRequiredMixin, ListView):
     def get(self, request, *args, **kwargs):
         if not self.request.user.is_vendor:
             return HttpResponseRedirect('/')
-        return render(request, self.template_name, {'context_object_name': self.context_object_name})
 
     def get_queryset(self):
         return Order.objects.filter(paid=8).select_related('payment')
@@ -251,7 +238,6 @@ class VendorCompleteOrderDetailView(LoginRequiredMixin, DetailView):
     def get(self, request, *args, **kwargs):
         if not self.request.user.is_vendor:
             return HttpResponseRedirect('/')
-        return render(request, self.template_name, {'context_object_name': self.context_object_name})
 
     def get_object(self, queryset=None):
         order_id = self.kwargs.get("order_id")
@@ -266,7 +252,6 @@ class VendorCancelOrderListView(LoginRequiredMixin, ListView):
     def get(self, request, *args, **kwargs):
         if not self.request.user.is_vendor:
             return HttpResponseRedirect('/')
-        return render(request, self.template_name, {'context_object_name': self.context_object_name})
 
     def get_queryset(self):
         return Order.objects.filter(Q(paid=3) | Q(paid=4)).select_related('payment')
@@ -279,7 +264,6 @@ class VendorCancelOrderDetailView(LoginRequiredMixin, DetailView):
     def get(self, request, *args, **kwargs):
         if not self.request.user.is_vendor:
             return HttpResponseRedirect('/')
-        return render(request, self.template_name, {'context_object_name': self.context_object_name})
 
     def get_object(self, queryset=None):
         order_id = self.kwargs.get("order_id")
@@ -294,7 +278,6 @@ class VendorDisputeOrderListView(LoginRequiredMixin, ListView):
     def get(self, request, *args, **kwargs):
         if not self.request.user.is_vendor:
             return HttpResponseRedirect('/')
-        return render(request, self.template_name, {'context_object_name': self.context_object_name})
 
     def get_queryset(self):
         return Order.objects.filter(Q(paid=5) | Q(paid=6)).select_related('payment')
@@ -307,7 +290,6 @@ class VendorDisputeOrderDetailView(LoginRequiredMixin, DetailView):
     def get(self, request, *args, **kwargs):
         if not self.request.user.is_vendor:
             return HttpResponseRedirect('/')
-        return render(request, self.template_name, {'context_object_name': self.context_object_name})
 
     def get_object(self, queryset=None):
         order_id = self.kwargs.get("order_id")

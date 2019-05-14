@@ -11,25 +11,10 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 from main.models import Category, Product
 from cryptowatch_client import Client
-
+from background.views import crypto_currencies
 """
 rememeber to add cart.clear()
 """
-
-
-def crypto_currencies():
-    client = Client(timeout=30)
-    btcgbp = client.get_markets_price(exchange='gdax', pair='btcgbp')
-    btcusd = client.get_markets_price(exchange='gdax', pair='btcusd')
-    btceur = client.get_markets_price(exchange='gdax', pair='btceur')
-    btcgbp_response = btcgbp.json()
-    btcusd_response = btcusd.json()
-    btceur_response = btceur.json()
-    btcgbp_price = btcgbp_response.get('result').get('price')
-    btcusd_price = btcusd_response.get('result').get('price')
-    btceur_price = btceur_response.get('result').get('price')
-    crypto_price = {'btcusd': btcusd_price, 'btcgbp': btcgbp_price, 'btceur': btceur_price}
-    return crypto_price
 
 
 def waiting(request,order_id, address, cost):

@@ -3,11 +3,10 @@ from django.utils.translation import ugettext_lazy as _
 from .models import Chat, ChatMessage, Ticket, TicketReply
 
 class ChatMessageForm(forms.ModelForm):
-	message = forms.CharField()
-	chat_id = forms.IntegerField()
-	class Meta:
-		model = ChatMessage
-		fields = ('message',)
+    message = forms.CharField()
+    class Meta:
+        model = ChatMessage
+        fields = ('message',)
 
 class TicketForm(forms.ModelForm):
 	sub_title = forms.CharField()
