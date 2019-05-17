@@ -75,7 +75,7 @@ class ShippingOptions(models.Model):
     zone_type = models.CharField(max_length=255)
     
     class Meta:
-        ordering = ('zone_name',)
+        ordering = ('id',)
     def __str__(self):
         return self.zone_name
         

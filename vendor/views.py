@@ -103,27 +103,35 @@ def update_product(request):
             messages.warning(request, msg)
             return list_products(request)
 
-def VendorShippingOptions(request):
-    shipping_options = ShippingOptions.objects.all
-    if shipping_options:
-        pass
-    else:
-        shipping_options = "Now working"
-    return render(request, 'shipping/shippingoptions.html', {'shipping_options': shipping_options})
 
-def edit_shipping_options(request):
-    form = ShippingOptionsForm()
+def shipping_options(request):
+    form = None
     shipping_options = ShippingOptions.objects.all()
+    shipping_options_count = ShippingOptions.objects.count()
+    if shipping_options_count < 5:
+        form = ShippingOptionsForm()
+        context = {
+            'shipping_options' : shipping_options,
+            'form' : form
+        }
+    else:
+        message = "You can only add 6 shipping options"
+        messages.warning(request, message)
+        context = {
+        'shipping_options' : shipping_options,
+        'new_message' : message
+    }    
     if request.method == "POST":
+        
         data = request.POST.dict()
         zone_name = data.get('zone_name')
         zone_type = data.get('zone_type')
-        new_option = form.save(commit=False)
         new = ShippingOptions.objects.create(zone_name = zone_name,zone_type= zone_type)
         shipping_options = ShippingOptions.objects.all()
         new.save()  # Now you
-        form = "succnew_option"
-    return render(request, 'shipping/addshipping.html', {'form' : form,  'shipping_options' : shipping_options })
+        if shipping_options_count > 7:
+            return redirect('shipping_options')
+    return render(request, 'shipping/shippingoptions.html', context)
 
 def edit_product(request, product_id):
     product = get_object_or_404(Product, id=product_id)

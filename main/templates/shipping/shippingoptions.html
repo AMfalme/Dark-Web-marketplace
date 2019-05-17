@@ -39,7 +39,7 @@
                 </div>
                 {% endif %}
                 <div class="col-xs-4 m-a-sm {% if request.path == '/account/help/' %} text-warn {% else %} text-side {% endif %}">
-                    <a href="{% url 'user_VendorShippingOptions' %}">
+                    <a href="{% url 'shipping_options' %}">
                         <i class="fa fa-ship"></i>
                         Shipping </a>
                 </div>
@@ -103,34 +103,41 @@
             <div class="box" style="background: #141414; color: #666">
                 <div class="box-header">
                     <h2 style="color: #6ec2d1">My Shipping Options
-                        <a href="{% url 'edit_shipping_options' %}" ><span class="fa fa-plus text-warn m-b-md pull-right" style="font-size: 18px;">Add Shipping Option</span></a>
+                        <a href="{% url 'shipping_options' %}" ><span class="fa fa-plus text-warn m-b-md pull-right" style="font-size: 18px;">Add Shipping Option</span></a>
                     </h2>
                 </div>
                 <div class="box-divider m-0"></div>
                 <table id="example" class="table box-body" style="width:100%">
                     <thead>
-                        <th>id</th>
+                        <th>Zone id</th>
                         <th>Zone Name</th>
                         <th>Zone Type</th>
-                        <th>{{ option.id }}</th>
+                        <th>Actions</th>
                     </thead>
                     <tbody>
-                {{options}}
-                    {% for option in options %}
+                
+                    {% for option in shipping_options %}
                         <tr class="b-t"></tr>
                             <td align="center">{{ option.id }}</td>
-                            <td align="center">{{ option.zone_name }}</td>
                             <td align="center">{{ option.zone_type }}</td>
+                            <td align="center">{{ option.zone_name }}</td>
                            
                             <td align="center">
-                                <a href="{% url 'user_vendor_edit_product' product_id=product.id %}" class="text-success">Update</a>
-                                <a href="{% url 'user_vendor_delete_product' product_id=product.id %}" class="text-danger">Delete</a>
+                                <a href="" class="text-success">Update</a>
+                                <a href="" class="text-danger">Delete</a>
                             </td>
                         </tr>
                     {% endfor %}
                    
                     </tbody>
                 </table>
+                <div class="box-divider m-0"></div>
+              
+                <form action="" method="post">
+                    {% csrf_token %}
+                    {{ form }}
+                    <input type="submit" value="Submit">
+                </form>
             </div>
         </div>
     </div>

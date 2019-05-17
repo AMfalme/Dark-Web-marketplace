@@ -47,7 +47,7 @@
                                     My Favorites</a>
                 </div>
                 <div class="col-xs-4 m-a-sm {% if request.path == '/account/help/' %} text-warn {% else %} text-side {% endif %}">
-                    <a href="#">
+                    <a href="{% url 'shipping_options' %}">
                         <i class="fa fa-ship"></i>
                         Shipping Options </a>
                 </div>
