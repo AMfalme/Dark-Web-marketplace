@@ -106,6 +106,8 @@ def update_product(request):
 
 def shipping_options(request):
     form = None
+    message = "You can only add 6 shipping options"
+    messages.warning(request, message)
     shipping_options = ShippingOptions.objects.all()
     shipping_options_count = ShippingOptions.objects.count()
     if shipping_options_count < 5:
@@ -115,8 +117,6 @@ def shipping_options(request):
             'form' : form
         }
     else:
-        message = "You can only add 6 shipping options"
-        messages.warning(request, message)
         context = {
         'shipping_options' : shipping_options,
         'new_message' : message
@@ -129,8 +129,6 @@ def shipping_options(request):
         new = ShippingOptions.objects.create(zone_name = zone_name,zone_type= zone_type)
         shipping_options = ShippingOptions.objects.all()
         new.save()  # Now you
-        if shipping_options_count > 7:
-            return redirect('shipping_options')
     return render(request, 'shipping/shippingoptions.html', context)
 
 def edit_product(request, product_id):
