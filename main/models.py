@@ -5,7 +5,7 @@ from accounts.models import User
 from star_ratings.models import Rating, UserRating
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.contrib.contenttypes.fields import GenericRelation
-
+from django.template.defaultfilters import slugify
 
 class Category(models.Model):
     name = models.CharField(max_length=150, db_index=True)
@@ -69,3 +69,13 @@ class Product(models.Model):
             return reverse('product_detail', args=[self.id, self.slug])
 
 
+class ShippingOptions(models.Model):
+    """docstring for ShippingOptions"""
+    zone_name = models.CharField(max_length=100)
+    zone_type = models.CharField(max_length=255)
+    
+    class Meta:
+        ordering = ('zone_name',)
+    def __str__(self):
+        return self.zone_name
+        

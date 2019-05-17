@@ -7,7 +7,7 @@
 {% block title %}
     {% if category %}{{ category.name }} {% else %} Products {% endif %}
 {% endblock %}
-
+ 
 {% block content %}
     <div id="sidebar" class="span3">
 		{% comment %}<div class="container ">{% endcomment %}
@@ -46,6 +46,11 @@
                                     <i class="fa fa-thumbs-up"></i>
                                     My Favorites</a>
                 </div>
+                <div class="col-xs-4 m-a-sm {% if request.path == '/account/help/' %} text-warn {% else %} text-side {% endif %}">
+                    <a href="#">
+                        <i class="fa fa-ship"></i>
+                        Shipping Options </a>
+                </div>
                 {% endif %}
                 <div class="col-xs-4 m-a-sm {% if '/account/orders/' in request.path %} text-warn {% else %} text-side {% endif %}">
                                 <a href="{% url 'user_order_list' %}">
@@ -62,6 +67,7 @@
                                     <i class="fa fa-question"></i>
                                     Help </a>
                 </div>
+               
             </div>
         </div>
     </div>

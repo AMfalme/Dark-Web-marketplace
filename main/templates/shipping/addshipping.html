@@ -48,7 +48,7 @@
                                     <i class="fa fa-shopping-cart"></i>
                                     My Orders </a>
                 </div>
-               
+              
                 <div class="col-xs-4 m-a-sm" style="color: #6ec2d1">
                                 <a href="{% url 'user_ratings' %}">
                                     <i class="fa fa-tasks"></i>
@@ -59,6 +59,7 @@
                                     <i class="fa fa-question"></i>
                                     Help </a>
                 </div>
+                
             </div>
         </div>
     <div class="" style="margin-bottom: 20px">
@@ -101,36 +102,16 @@
         <div class="row-fluid">
             <div class="box" style="background: #141414; color: #666">
                 <div class="box-header">
-                    <h2 style="color: #6ec2d1">My Products
-                        <a href="{% url 'user_vendor_add_product' %}" ><span class="fa fa-plus text-warn m-b-md pull-right" style="font-size: 18px;">Add</span></a>
+                    <h2 style="color: #6ec2d1">My Shipping Options
+                        <a href="{% url 'edit_shipping_options' %}" ><span class="fa fa-plus text-warn m-b-md pull-right" style="font-size: 18px;">Add</span></a>
                     </h2>
                 </div>
                 <div class="box-divider m-0"></div>
-                <table id="example" class="table box-body" style="width:100%">
-                    <thead>
-                        <th>Category</th>
-                        <th>Name</th>
-                        <th>Description</th>
-                        <th>Stock</th>
-                        <th>price</th>
-                        <th>Actions</th>
-                    </thead>
-                    <tbody>
-                    {% for product in products%}
-                        <tr class="b-t">
-                            <td align="center">{{ product.category }}</td>
-                            <td align="center">{{ product.name }}</td>
-                            <td align="center">{{ product.description }}</td>
-                            <td class="text-primary" align="center">{{ product.stock }}</td>
-                            <td class="text-warn" align="center">$ {{ product.price }}</td>
-                            <td align="center">
-                                <a href="{% url 'user_vendor_edit_product' product_id=product.id %}" class="text-success">Update</a>
-                                <a href="{% url 'user_vendor_delete_product' product_id=product.id %}" class="text-danger">Delete</a>
-                            </td>
-                        </tr>
-                    {% endfor %}
-                    </tbody>
-                </table>
+                <form action="" method="post">
+                    {% csrf_token %}
+                    {{ form }}
+                    <input type="submit" value="Submit">
+                </form>
             </div>
         </div>
     </div>

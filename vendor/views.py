@@ -1,6 +1,7 @@
 from django.shortcuts import render, get_object_or_404
 from vendor.forms import ProductForm
-from main.models import Product, Message
+from vendor.forms import ShippingOptionsForm
+from main.models import Product, Message, ShippingOptions
 from orders.models import Order, OrderItem, Pay
 from accounts.models import User
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -102,6 +103,27 @@ def update_product(request):
             messages.warning(request, msg)
             return list_products(request)
 
+def VendorShippingOptions(request):
+    shipping_options = ShippingOptions.objects.all
+    if shipping_options:
+        pass
+    else:
+        shipping_options = "Now working"
+    return render(request, 'shipping/shippingoptions.html', {'shipping_options': shipping_options})
+
+def edit_shipping_options(request):
+    form = ShippingOptionsForm()
+    shipping_options = ShippingOptions.objects.all()
+    if request.method == "POST":
+        data = request.POST.dict()
+        zone_name = data.get('zone_name')
+        zone_type = data.get('zone_type')
+        new_option = form.save(commit=False)
+        new = ShippingOptions.objects.create(zone_name = zone_name,zone_type= zone_type)
+        shipping_options = ShippingOptions.objects.all()
+        new.save()  # Now you
+        form = "succnew_option"
+    return render(request, 'shipping/addshipping.html', {'form' : form,  'shipping_options' : shipping_options })
 
 def edit_product(request, product_id):
     product = get_object_or_404(Product, id=product_id)
@@ -295,3 +317,5 @@ class VendorDisputeOrderDetailView(LoginRequiredMixin, DetailView):
         order_id = self.kwargs.get("order_id")
         orders = OrderItem.objects.filter(order_id=order_id, author=self.request.user)
         return orders.first()
+
+

@@ -46,11 +46,17 @@
                                     My Favorites</a>
                 </div>
                 {% endif %}
+                <div class="col-xs-4 m-a-sm {% if request.path == '/account/help/' %} text-warn {% else %} text-side {% endif %}">
+                    <a href="{% url 'user_vendor_listProducts' %}">
+                        <i class="fa fa-ship"></i>
+                        Shipping </a>
+                </div>
                 <div class="col-xs-4 m-a-sm {% if '/account/orders/' in request.path %} text-warn {% else %} text-side {% endif %}">
                                 <a href="{% url 'user_order_list' %}">
                                     <i class="fa fa-shopping-cart"></i>
                                     My Orders </a>
                 </div>
+                
                 <div class="col-xs-4 m-a-sm {% if request.path == '/account/ratings/' %} text-warn {% else %} text-side {% endif %}">
                                 <a href="{% url 'user_ratings' %}">
                                     <i class="fa fa-tasks"></i>
@@ -61,6 +67,7 @@
                                     <i class="fa fa-question"></i>
                                     Help </a>
                 </div>
+              
             </div>
         </div>
 

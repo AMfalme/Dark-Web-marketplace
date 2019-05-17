@@ -43,6 +43,11 @@
                                     <i class="fa fa-shopping-cart"></i>
                                     My Orders </a>
                 </div>
+                <div class="col-xs-4 m-a-sm {% if request.path == '/account/help/' %} text-warn {% else %} text-side {% endif %}">
+                    <a href="{% url 'user_VendorShippingOptions' %}">
+                        <i class="fa fa-ship"></i>
+                        Shipping </a>
+                </div>
                 <div class="col-xs-4 m-a-sm" style="color: #6ec2d1">
                                 <a href="{% url 'user_ratings' %}">
                                     <i class="fa fa-tasks"></i>

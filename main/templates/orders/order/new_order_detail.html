@@ -28,40 +28,7 @@
                         </div>{% endcomment %}
             </div>
             <div class="row b-t ">
-                <div class="col-xs-4 m-a-sm {% if request.path == '/account/profile/' %} text-warn {% else %} text-side {% endif %}">
-					    <a href="{% url 'user_profile' %}">
-                                    <i class="fa fa-home"></i>
-                                    Overview </a>
-                </div>
-                {% if request.user|is_vendor %}
-                <div class="col-xs-4 m-a-sm {% if 'vendor' in request.path%} text-warn {% else %} text-side {% endif %}">
-                                <a href="{% url 'user_vendor_listProducts' %}">
-                                    <i class="fa fa-user"></i>
-                                    Vendor Panel </a>
-
-                </div>
-                {% else %}
-                <div class="col-xs-4 m-a-sm {% if request.path == '/account/settings/' %} text-warn {% else %} text-side {% endif %}">
-                                <a href="{% url 'user_favorites' %}">
-                                    <i class="fa fa-thumbs-up"></i>
-                                    My Favorites</a>
-                </div>
-                {% endif %}
-                <div class="col-xs-4 m-a-sm {% if '/account/orders/' in request.path %} text-warn {% else %} text-side {% endif %}">
-                                <a href="{% url 'user_order_list' %}">
-                                    <i class="fa fa-shopping-cart"></i>
-                                    My Orders </a>
-                </div>
-                <div class="col-xs-4 m-a-sm {% if request.path == '/account/ratings/' %} text-warn {% else %} text-side {% endif %}">
-                                <a href="#">
-                                    <i class="fa fa-tasks"></i>
-                                    Tasks </a>
-                </div>
-                <div class="col-xs-4 m-a-sm {% if request.path == '/account/help/' %} text-warn {% else %} text-side {% endif %}">
-                                <a href="#">
-                                    <i class="fa fa-question"></i>
-                                    Help </a>
-                </div>
+                
             </div>
         </div>
         <div class="" style="margin-bottom: 20px">
