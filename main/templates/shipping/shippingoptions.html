@@ -86,14 +86,16 @@
 
         </ul>
     </div>
-    {% comment %}<div class="" style="margin-bottom: 20px">
+   
+    <div class="" style="margin-bottom: 20px">
         <p class="side-header"> Products</p>
         <ul class="side-back" style="margin-top: -16px">
             <li class="side-content">
                 <a href="" style="color: #6ec2d1">Add Products</a>
             </li>
         </ul>
-    </div>{% endcomment %}
+    </div>
+  
 
 </div>
 
@@ -103,7 +105,7 @@
             <div class="box" style="background: #141414; color: #666">
                 <div class="box-header">
                     <h2 style="color: #6ec2d1">My Shipping Options
-                        <a href="{% url 'shipping_options' %}" ><span class="fa fa-plus text-warn m-b-md pull-right" style="font-size: 18px;">Add Shipping Option</span></a>
+                     {% if form %}   <a href="{% url 'shipping_options' %}" ><span class="fa fa-plus text-warn m-b-md pull-right" style="font-size: 18px;">Add Shipping Option</span></a>{% endif %}
                     </h2>
                 </div>
                 <div class="box-divider m-0"></div>
@@ -123,7 +125,7 @@
                             <td align="center">{{ option.zone_name }}</td>
                            
                             <td align="center">
-                                <a href="" class="text-success">Update</a>
+                                <a href="{% url 'vendor_view:edit_shippingoption' option.id %}" class="text-success">Update</a>
                                 <a href="" class="text-danger">Delete</a>
                             </td>
                         </tr>
@@ -131,6 +133,7 @@
                    
                     </tbody>
                 </table>
+                {% if form %}
                 <div class="box-divider m-0"></div>
               
                 <form action="" method="post">
@@ -138,6 +141,7 @@
                     {{ form }}
                     <input type="submit" value="Submit">
                 </form>
+                {% endif %}
             </div>
         </div>
     </div>

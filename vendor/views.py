@@ -105,32 +105,41 @@ def update_product(request):
 
 
 def shipping_options(request):
-    form = None
-    message = "You can only add 6 shipping options"
-    messages.warning(request, message)
     shipping_options = ShippingOptions.objects.all()
     shipping_options_count = ShippingOptions.objects.count()
-    if shipping_options_count < 5:
-        form = ShippingOptionsForm()
+    context = {
+            'shipping_options' : shipping_options
+        }
+    if shipping_options_count < 6: 
+        form = ShippingOptionsForm()   
+        context['form'] = form
+    if request.method == "POST" and shipping_options_count >= 6:    
+        message = "You can only add 6 shipping options"
+        messages.warning(request, message)
         context = {
             'shipping_options' : shipping_options,
-            'form' : form
+            'new_message' : message
         }
-    else:
-        context = {
-        'shipping_options' : shipping_options,
-        'new_message' : message
-    }    
-    if request.method == "POST":
-        
+    if request.method == 'POST' and shipping_options_count < 6:
         data = request.POST.dict()
         zone_name = data.get('zone_name')
         zone_type = data.get('zone_type')
         new = ShippingOptions.objects.create(zone_name = zone_name,zone_type= zone_type)
-        shipping_options = ShippingOptions.objects.all()
         new.save()  # Now you
+        new_count = ShippingOptions.objects.count()
+        if new_count > 5:
+            context = {
+                'shipping_options' : shipping_options
+            }
     return render(request, 'shipping/shippingoptions.html', context)
-
+def edit_shippingoption(request, shipping_option_id):
+    shipping_option = get_object_or_404(ShippingOptions, id = shipping_option_id)
+    form = ShippingOptionsForm()
+    context = {
+        'option' :shipping_option,
+        'form' : form
+    }
+    return render(request, 'edit_shipping_option.html', context)
 def edit_product(request, product_id):
     product = get_object_or_404(Product, id=product_id)
     form = ProductForm(request.POST or None, instance=product)
